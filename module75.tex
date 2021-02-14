@@ -1,0 +1,44 @@
+\section{Global Optimizations}
+
+Global optimisations go beyond the scope of a single basic block. It needs reasoning of the whole control flow graph which may be within the body of a method.
+
+% Example 1
+% Example 2
+
+\subsection{Global Constant Propagation}
+
+\begin{itemize}
+    \item This is similar to local constant propagation but now we are reasoning in a global level (across several basic blocks within the body of a method)
+    \item In this optimisation, we basically ask the question "When can we replace the use of a variable \textbf{x} with a constant \textbf{k}
+    
+    Ans: If on \textbf{every path} to the use of x, if the \textbf{last assignment} to x is \textbf{x:=k}, then we can do this transformation/optimisation.
+\end{itemize}
+
+% Example 3
+
+The algorithm for global constant propagation requires a class of algorithms which are called "Global Dataflow Analysis". This kind of reasoning (with paths, etc.) is required for many different types of optimisation problems in compilers. And so, it helps to create a common framework in which we can implement the same logic but with different kinds of properties so that there is reuse of the same idea.
+
+Let's identify some traits that global optimisations tasks share:
+
+\begin{itemize}
+    \item \underline{Optimisation depends on knowing property X at a certain program point P}
+    
+    Eg. In global constant propagation, we were interested in knowing if x:=k is the last assignment on all possible paths, at the program point of the last basic block (where x is used) in our example graph.
+    
+    \item \underline{Proving X at P requires knowledge of entire program}
+    
+    Eg. In our global constant propagation example, to be able to say x:=k is the last assignment to x on all possible paths that can reach program point P, we need to know the characteristics of the entire program. As opposed to local optimistaion where you only need info about the concerned basic block. Here, even though transformation is only made in a basic block, it relies on a property that requires knowledge of the entire program.
+    
+    \item \underline{It's OK to be conservative}
+    
+    We can either say,
+    \begin{center}
+        \textit{X is definitely true}
+    \end{center}
+    or say,
+    \begin{center}
+        \textit{We don't know if X is true}    
+    \end{center}
+    
+    We want to get "X is definitely true" as much as possible because only then can we apply the transformation but if we get the conservative answer "We don't know if X is true", then we don't apply the transformation to preserve program correctness. Knowing if X is definitely not true is useless because in this case we still don't apply the transformation and so this use case is clubbed with "We don't know if X is true".
+\end{itemize}
