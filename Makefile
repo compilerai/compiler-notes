@@ -2,12 +2,15 @@ PDFS = main.pdf
 
 all: $(PDFS)
 
-#cv-rs.pdf: cv.pdf rs.pdf
-#	pdftk cv.pdf rs.pdf cat output cv-rs.pdf
-%.pdf: %.tex
+main.pdf: *.tex
 	mkdir -p tmp
 	ln -sf ${PWD}/images tmp
-	TOPFILE=$(patsubst %.pdf,%.tex,$@) make -f Makefile.work
+	TOPFILE=main.tex SECFILE=*.tex  make -f Makefile.work
+
+#cv-rs.pdf: cv.pdf rs.pdf
+#	pdftk cv.pdf rs.pdf cat output cv-rs.pdf
+#%.pdf: %.tex
+#	TOPFILE=$(patsubst %.pdf,%.tex,$@) make -f Makefile.work
 
 .PHONY: clean clean-tmp preview print gzip gunzip tar ci
 

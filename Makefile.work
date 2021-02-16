@@ -84,7 +84,7 @@
 #
 
 #TOPFILE   = cv.tex
-SECFILE   = 
+#SECFILE   = 
 FIGDIR    = figures
 
 XPDFFLAGS = 
