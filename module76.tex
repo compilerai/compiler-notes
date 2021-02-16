@@ -1,0 +1,79 @@
+\section{DFA Values}
+
+\setlength{\parindent}{0pt}
+
+\maketitle
+
+\section{DFA Values}
+
+Recall that for global constant propagation, we need the following:
+
+\vspace{0.3cm}
+
+\underline{\textit{Optimisation}}: Replace a use of x by a constant k
+
+\underline{\textit{Constraint}}: On every path to the use of x, the last assignment to x should be x:=k
+
+\vspace{0.3cm}
+
+We need to do this for every variable in the program. But first let's do this for a single variable x and then we can generalise it to more variables.
+
+\subsection{Dataflow Analysis Values}
+
+These are abstract values that are supposed to capture the set or category of concrete values that x (a variable) may take.
+
+\vspace{0.5cm}
+
+At each program point, we associate one of the following values with X (a variable),
+\begin{center}
+    \begin{tabular}{| m{2cm} | m{7cm} |}
+        \hline
+        Value & Explanation \\
+        \hline
+        $\top$ (top) &
+        This value represents either that
+        \begin{itemize} 
+            \item This statement never executes
+            \item or we have not executed or seen it yet
+        \end{itemize}\\
+        \hline
+        $\bot$ (bottom) &
+        This value represents either that
+        \begin{itemize} 
+            \item We can't say that X is a constant
+            \item X is definitely not a constant
+        \end{itemize}\\
+        \hline
+        $C$ (constant) &
+        This value represents that X is a constant $C$\\
+        \hline
+    \end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{Question:} \underline{What are we trying to do here? What do these values mean?}
+
+\vspace{0.3cm}
+
+\textbf{Answer:} We are trying to figure out what are the possible values of X (a variable) at every program point. The values we are talking about essentially tell us if the program reached here what is the value of X or all the possible values of X at this program point.
+
+Now we will discuss each of the values in a little more detail,
+\begin{itemize}
+    \item \underline{$\top$ (top)} - This value represents that this statement never executes i.e the program/control never reaches here. This might be because this part of the program is never reachable from the beginning of the program. So in this case we just say that the value is $\top$ here because the statement never executes and therefore it is not meaningful to say what this value is.
+    \item \underline{C (constant)} - It could be any constant. Eg. 0,1,2,-2,etc. This value says that whenever this program point is reached, irrespective of the path taken, we are sure that X will be equal to constant value C at this point.
+    \item \underline{$\bot$ (bottom)} - This value essentially says that we don't know if X is a constant or not at this point. We are not sure of it's value. This might be happening because it's possible that on different paths X could take different values or on some path X is not a constant, etc. Even if we know for sure that X is not a constant, we still assign $\bot$ to X. This is a conservative assignment. Technically, even if we (DFA algorithm) assign $\bot$ to X at every program point conservatively, then this solution is also correct but it is trivially true and is not of much use to us.
+\end{itemize}
+
+\textbf{Note:} If we're still in the middle of execution of the DFA algorithm and at a particular point, we have value $\top$ for one of the variables in the program then it could also mean that the DFA algorithm hasn't seen this point yet or hasn't reached this point yet. The above discussion and interpretation of $\top$ only applies if a variable has $\top$ value after the DFA algorithm has finished executing
+
+\subsection{Using DFA values for transformation}
+
+Given global constant information ($\top$, $\bot$, C)
+\begin{itemize}
+    \item Inspect x = $?$ (either $\top$ or $\bot$ or C) at the program point that just precedes the statement which you want to examine (the statement that uses x)
+    \item If x = C, then replace the use of x with C
+\end{itemize}
+
+For some examples of how to assign DFA values see the 
+\href{https://www.youtube.com/watch?v=EI56VONzCcc&list=PLf3ZkSCyj1tf3rPAkOKY5hUzDrDoekAc7&index=75&ab_channel=compilerai}{lecture video}

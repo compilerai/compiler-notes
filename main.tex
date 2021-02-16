@@ -17,7 +17,17 @@ draft%     uncomment to activate draft mode (see preamble/proofs)
 %\include{headerfooter}
 %\include{footnoteformat}
 %\include{codesnipets}
-%\include{proofs}     
+%\include{proofs}
+
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=magenta,
+    filecolor=cyan,      
+    urlcolor=blue,
+}
 
 % define issue details
 \title{Compiler Optimization Notes}
@@ -53,8 +63,8 @@ draft%     uncomment to activate draft mode (see preamble/proofs)
 %\include{../module73} 
 %\include{../module74}
 \input{../module75} 
-%\include{../module76}
-%\include{../module77} 
+\input{../module76}
+\input{../module77} 
 %\include{../module78}
 %\include{../module79} 
 %\include{../module80}
