@@ -1,1 +1,129 @@
 \section{Dataflow Analysis Algorithm (DFA)}
+
+(Prepared by Aditya Senthilnathan)
+
+In this section, we will now try to answer the question "How do we identify what the DFA value should be at every program point?"
+
+We will only analyse one particular variable x for now. This can easily be generalised for arbitrary number of variables and this is left to the reader.
+
+\subsection{Insight}
+
+DFA of a complex and large program can be expressed as a combination of simple rules relating the change in information between adjacent statements.
+
+\vspace{0.3cm}
+
+We're just going to see
+\begin{itemize}
+    \item What the value of x is just before this statement
+    \item What is the current statement
+    \item Based on the current statement, we then use rules (to be discussed) to compute what should be the value after the statement
+\end{itemize}
+
+One way to think about this is that we are "pushing" or "transferring" information from one statement to the next. It's almost just like program execution with the caveat that we are not dealing with concrete values anymore but rather abstract DFA values.
+
+\subsection{Function for "Constant Information"}
+
+We now define a function $C(x, s, in/out)$ where,
+
+\begin{itemize}
+    \item $x$ - variable for which we want to compute abstract values
+    \item $s$ - statement s in the program
+    \item $in/out$ - whether it is input to the statement or output to the statement i.e just before the statement or just after the statement.
+    \begin{itemize}
+        \item $C(x, s, in)$ = Value of x just before s
+        \item $C(x, s, out)$ = Value of x just after s i.e just after statement s is executed
+    \end{itemize}
+\end{itemize}
+
+The idea is to calculate the value of this function $C(x, s, in/out)$ for every x and every s (both in and out)
+
+\subsection{Transfer Function}
+
+We need to define how information is transferred from one statement to another i.e how are we pushing information. For this we need to define a transfer function.
+
+\begin{center}
+    \underline{Transfer Function:} transfers information from one statement to another
+\end{center}
+
+We are going to define rules for the following two cases:
+
+\begin{itemize}
+    \item \textbf{Case 1:} There are one or more predecessor points with edges to the current program point. In this case, we will see how to combine information/values flowing in from the predecessor points to assign a value for the $C()$ function in the current program point
+    \item \textbf{Case 2:} For a given statement s, we see how the information/value is modified as it flows through the statement
+\end{itemize}
+
+\subsubsection{Transfer function for Global Constant Propagation}
+
+We will define the function by doing an exhaustive case analysis. We can do this kind of finite description of the function with an exhaustive case analysis because there are only a limited number of values and cases to consider.
+
+\vspace{0.3cm}
+
+$C(x, s, p)$ can take only one of 3 different unique values during and after execution of the DFA algorithm i.e $\top, \bot, C$. Also once the algorithm picks a constant value for x at a particular program point, the constant value is fixed and it cannot vary after that. Eg. If the DFA algorithm picks 3, it cannot assign 4 later on. It can only change to either $\top$ or $\bot$ later on in the execution.
+
+\vspace{0.3cm}
+
+\textbf{Rules for the Transfer function:}
+
+\begin{enumerate}
+    \item If $C(x, p, out) = \bot$ then $\forall s \in$ successors(p), $C(x, s, in) = \bot$
+    % Insert image
+    \item If $C(x, s, in) = C$ and s does not modify x then, $C(x, s, out) = C$
+    % Insert image
+    \item If $C(p_i, x, out) = \bot$ for any i, then $C(x, s, in) = \bot$
+    % Insert image
+    \item If $C(p_i, x, out) = c$ and $C(p_j, x, out) = d$ and $c \neq d, i \neq j$ for some $i, j$ then, $C(s,x,in) = \bot$
+    % Insert image
+    \item If $C(p_i, x, out) = c$ or $C(p_i, x, out) = \top$ for all i, then $C(s, x, in) = c$
+    \item If $C(p, x_i, out) = \top$ for all i, then $C(s, x, in) = \top$
+    \item If $C(s, x, in) = \top$, then $C(s, x, out) = \top$
+    \item If rule 7 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := c, x, out) = c$ [where c is a constant]
+    \item If rule 7 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := f(...), x, out) = \bot$
+    \item $C(y := ..., x, out) = C(y:=..., x, in)$ where $y \neq x$
+\end{enumerate}
+
+We now have 10 rules relating $C(s, x, in/out)$ to the value of this function at a predecessor point. These rules are exhaustive.
+
+\vspace{0.3cm}
+
+\underline{But so far we have just stated the rules. How do we get the actual values?}
+
+\vspace{0.3cm}
+
+Think of this as a system of equations. We are interested in solving and identifying values for this $C$ function such that all 10 rules are satisfied.
+
+\vspace{0.3cm}
+
+\underline{How do we solve this system of equations?}
+
+\vspace{0.3cm}
+
+Note that there is a trivial solution,
+
+\begin{center}
+    $C(s, x, in/out) = \bot$, for all statements s
+\end{center}
+
+All 10 rules are satisfied by this solution but this solution is useless to us because it doesn't allow us to perform any transformations/optimizations. We're not interested in just any solution. We are interested in the "most precise" solution (for some notion of precision). For eg. Saying that $x=4$ at some program point is more precise than just saying $x=\bot$. Similarly, saying that $x=\top$ is more precise than saying $x=\bot$ because the fact that this program point is unreachable is still useful information because now we can consider doing dead code elimination in this part of the program.
+
+\vspace{0.3cm}
+
+To solve this system of equations in a more precise way, we use a Fixed Point Iteration Algorithm.
+
+\vspace{0.3cm}
+
+\underline{Algorithm:}
+
+\vspace{0.3cm}
+
+\begin{itemize}
+    \item At every entry point s to the program, set $C(s, x, in) = \bot$
+    \item At every other statement s (which is non-entry), set $C(s,x,in) = \top$
+    \item For every statement s, $C(s,x,out) = \top$
+    \item Repeat the following until all program points satisfy rules 1-10:
+    \begin{itemize}
+        \item Pick a statement s not satisfying one or more rules in rules 1-10 and update the corresponding $C()$ function value using the appropriate rule
+    \end{itemize}
+\end{itemize}
+
+There is a guarantee that this algorithm will converge. It will also give us the most precise answer. In the worst case, the solution it gives will be $\bot$ at all program points.
+
