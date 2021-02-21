@@ -1,0 +1,870 @@
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+\clearpage
+
+\section{DFA Loop Example}
+
+In this section, we will look at an example of DFA for a program with loops. We will apply the DFA algorithm on the variable ``x" in the following piece of code.
+
+\begin{figure}[h!]
+\caption{Example}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 2.5 cm}]
+\node[state] (A) node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
+  x := 3
+  \nodepart{second}
+  b \textgreater  0?%
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
+  y := z + w
+  \nodepart{second}
+  x := 4%
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
+  y := 0
+  \nodepart{second}
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
+  a := 2 * x
+  \nodepart{second}
+  c == 0 ?
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+
+\clearpage
+Next figure shows all the program points in our example. Program points are all the points that appear before and after every statement. In case of only one predecessor, the ``out of the predecessor" is merged with the ``in of the successor" while working on this piece of code. ``---" marks the program points in the example we are working on.
+
+
+\begin{figure}[h!]
+\caption{Program Points}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  ---
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  ---
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  ---%
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  ---
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  ---
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  ---%
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  ---
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  ---
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  ---
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  ---
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  ---
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+
+Next step is to initialize all the program points. To do that, we initialize all the program points to value $\top$ except the entry points of the program which are initialized to $\bot$
+
+
+\begin{figure}[h!]
+\caption{Initialization}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $\top$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $\top$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $\top$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $\top$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\clearpage
+In the next step, we identify the statements which do not follow the transfer function rules and start updating them. At this stage, only the statement ``x := 3" does not follow the transfer function rule, so we update it.
+
+\begin{figure}[h!]
+\caption{``x := 3" statement update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $\top$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $\top$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $\top$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\clearpage
+The process of identifying the statement that violates the transfer function rules and updating it, is repeated until every program point satisfies them. At this stage, the ``b \textgreater 0?" statement violates the transfer function rules, so we update it.
+
+\begin{figure}[h!]
+\caption{``b \textgreater 0?" statement update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $\top$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $\top$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $\top$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+At this stage, the successors of Block B and Block C do not satisfy the transfer function rules, so we can update them.
+
+
+
+\begin{figure}[h!]
+\caption{``Successors of Block B and Block C" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $\top$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\clearpage
+
+There are again two different statements ``y := z + w" and ``y:=0" that violate the transfer function rules, and we will update them.
+
+\begin{figure}[h!]
+\caption{``y := z + w" and "y := 0" statements update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $\top$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+
+We have again two different statements that we can update at this stage, and we can choose to update anyone that we like, since the algorithm is guaranteed to return the same solution. In this example, we will update the ``x := 4" statement.
+
+\begin{figure}[h!]
+\caption{``x := 4" statement update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $C(4)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+Now we will do the same thing for Block D, update the successor for Block D and then update its statements one by one. At the end, we will reach this stage.
+
+\begin{figure}[h!]
+\caption{``Block D" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $C(4)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\bot$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\bot$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\bot$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+
+At this stage, we haven't reached the fixed point solution. The successor of Block C violates the transfer function rules. Earlier, it was acceptable for the algorithm to update the value to C(3) because the predecessor entering from Block D was $\top$, which is now updated to $\bot$. So, we will have to update this program point. 
+
+
+\begin{figure}[h!]
+\caption{``Successor of Block C" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $C(4)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $\bot$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\bot$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\bot$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\bot$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\clearpage
+
+Updating the ``y := 0" statement, we reach this stage.
+\begin{figure}[h!]
+\caption{``Successor of Block C" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 4
+  \nodepart{five}
+  $C(4)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $\bot$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $\bot$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\bot$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\bot$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\bot$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+All the program points at this stage satisfy the transfer function rules, so this is a \textbf{Fixed Point Solution}.\\
+
+\clearpage
+
+To show how the algorithm could have worked differently, we will change  the ``x := 4" statement to ``x := 3" in Block C of our same example. This is our new example now.
+
+
+\begin{figure}[h!]
+\caption{Example}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 2.5 cm}]
+\node[state] (A) node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
+  x := 3
+  \nodepart{second}
+  b \textgreater  0?%
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
+  y := z + w
+  \nodepart{second}
+  x := 3%
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
+  y := 0
+  \nodepart{second}
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
+  a := 2 * x
+  \nodepart{second}
+  c == 0 ?
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\clearpage
+
+Algorithm will again start by initializing everything to $\top$, except the entry statement which is initialized to $\bot$. We will follow the same procedure and eventually reach this point after updating Blocks A, B and C.
+
+
+\begin{figure}[h!]
+\caption{``Blocks A, B and C" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 3
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $\top$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $\top$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $\top$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\clearpage
+
+This time the successor of Block D will be updated to constant 3 instead of $\bot$, because both the predecessors have the same value of constant 3. Updating the successor, and the following instructions in Block D, we reach this stage.
+
+\begin{figure}[h!]
+\caption{``Block D" update}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+  $\bot$
+  \nodepart{second}
+  x := 3
+  \nodepart{third}
+  $C(3)$
+  \nodepart{fourth}
+  b \textgreater 0? 
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+  $C(3)$
+  \nodepart{two}
+  y := z + w
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  x := 3
+  \nodepart{five}
+  $C(3)$ %
+  };
+\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+  $C(3)$
+  \nodepart{second}
+  y := 0
+  \nodepart{third}
+  $C(3)$
+  %
+  };
+\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+  $C(3)$
+  \nodepart{two}
+  a := 2 * x
+  \nodepart{three}
+  $C(3)$
+  \nodepart{four}
+  c == 0?
+  \nodepart{five}
+  $C(3)$
+  %
+  };
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
+\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\textbf{Question} : \underline{Have we reached the fixed point now?}\\
+
+\textbf{Answer} : It turns out that, in this case, we have reached the \textbf{Fixed Point Solution}. Both the predecessors of Block C, coming from Block A and Block D, have the value of Constant 3, so there is no need to update it.
