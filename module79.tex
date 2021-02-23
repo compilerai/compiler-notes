@@ -12,33 +12,33 @@ In this section, we will look at an example of DFA for a program with loops. We 
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 2.5 cm}]
-\node[state] (A) node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
+\node[state] (A){} node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
   x := 3
   \nodepart{second}
   b \textgreater  0?%
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
   y := z + w
   \nodepart{second}
   x := 4%
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
   y := 0
   \nodepart{second}
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
   a := 2 * x
   \nodepart{second}
   c == 0 ?
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -57,7 +57,7 @@ Next figure shows all the program points in our example. Program points are all 
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   ---
   \nodepart{second}
   x := 3
@@ -68,7 +68,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   ---%
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   ---
   \nodepart{two}
   y := z + w
@@ -79,7 +79,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   ---%
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   ---
   \nodepart{second}
   y := 0
@@ -87,7 +87,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   ---
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   ---
   \nodepart{two}
   a := 2 * x
@@ -99,12 +99,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   ---
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -122,7 +122,7 @@ Next step is to initialize all the program points. To do that, we initialize all
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -133,7 +133,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   $\top$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $\top$
   \nodepart{two}
   y := z + w
@@ -144,7 +144,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   $\top$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $\top$
   \nodepart{second}
   y := 0
@@ -152,7 +152,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   $\top$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -164,12 +164,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -186,7 +186,7 @@ In the next step, we identify the statements which do not follow the transfer fu
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -197,7 +197,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   $\top$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $\top$
   \nodepart{two}
   y := z + w
@@ -208,7 +208,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   \nodepart{five}
   $\top$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $\top$
   \nodepart{second}
   y := 0
@@ -216,7 +216,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   $\top$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -228,12 +228,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum heigh
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -250,7 +250,7 @@ The process of identifying the statement that violates the transfer function rul
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -261,7 +261,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $\top$
   \nodepart{two}
   y := z + w
@@ -272,7 +272,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $\top$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $\top$
   \nodepart{second}
   y := 0
@@ -280,7 +280,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -292,12 +292,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -315,7 +315,7 @@ At this stage, the successors of Block B and Block C do not satisfy the transfer
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A) {}  node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -326,7 +326,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -337,7 +337,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $\top$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -345,7 +345,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -357,12 +357,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -374,13 +374,13 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
 There are again two different statements ``y := z + w" and ``y:=0" that violate the transfer function rules, and we will update them.
 
 \begin{figure}[h!]
-\caption{``y := z + w" and "y := 0" statements update}
+\caption{``y := z + w" and ``y := 0" statements update}
 \begin {center}
 \begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -391,7 +391,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -402,7 +402,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $\top$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -410,7 +410,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -422,12 +422,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -444,7 +444,7 @@ We have again two different statements that we can update at this stage, and we 
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -455,7 +455,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -466,7 +466,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(4)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -474,7 +474,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -486,12 +486,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -507,7 +507,7 @@ Now we will do the same thing for Block D, update the successor for Block D and 
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -518,7 +518,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -529,7 +529,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(4)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -537,7 +537,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\bot$
   \nodepart{two}
   a := 2 * x
@@ -549,12 +549,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\bot$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -572,7 +572,7 @@ At this stage, we haven't reached the fixed point solution. The successor of Blo
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -583,7 +583,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -594,7 +594,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(4)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $\bot$
   \nodepart{second}
   y := 0
@@ -602,7 +602,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\bot$
   \nodepart{two}
   a := 2 * x
@@ -614,12 +614,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\bot$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -630,13 +630,13 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
 
 Updating the ``y := 0" statement, we reach this stage.
 \begin{figure}[h!]
-\caption{``Successor of Block C" update}
+\caption{``y := 0" statemnt update}
 \begin {center}
 \begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -647,7 +647,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -658,7 +658,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(4)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $\bot$
   \nodepart{second}
   y := 0
@@ -666,7 +666,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\bot$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\bot$
   \nodepart{two}
   a := 2 * x
@@ -678,12 +678,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\bot$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -703,33 +703,33 @@ To show how the algorithm could have worked differently, we will change  the ``x
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 2.5 cm}]
-\node[state] (A) node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
+\node[state] (A){} node [label = {[label distance = 0.55cm]90:Block A}, rectangle split,rectangle split parts=2]{%
   x := 3
   \nodepart{second}
   b \textgreater  0?%
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.55cm]90:Block B},rectangle split,rectangle split parts=2] [below left = of A] {%
   y := z + w
   \nodepart{second}
   x := 3%
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.55cm]90:Block C},rectangle split,rectangle split parts=2] [below right = of A] {%
   y := 0
   \nodepart{second}
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.55cm]90:Block D},rectangle split,rectangle split parts=2] [below left = of D] {%
   a := 2 * x
   \nodepart{second}
   c == 0 ?
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -748,7 +748,7 @@ Algorithm will again start by initializing everything to $\top$, except the entr
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -759,7 +759,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -770,7 +770,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -778,7 +778,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $\top$
   \nodepart{two}
   a := 2 * x
@@ -790,12 +790,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $\top$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}
@@ -812,7 +812,7 @@ This time the successor of Block D will be updated to constant 3 instead of $\bo
 semithick ,
 state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
 draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
-\node[state] (A) node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:Block A},rectangle split,rectangle split parts=5]{%
   $\bot$
   \nodepart{second}
   x := 3
@@ -823,7 +823,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (B) [below left = of A] node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.3cm]90:Block B}, rectangle split,rectangle split parts=5] [below left = of A] {%
   $C(3)$
   \nodepart{two}
   y := z + w
@@ -834,7 +834,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   \nodepart{five}
   $C(3)$ %
   };
-\node[state] (D) [below right =of A] node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.65cm]90:Block C}, rectangle split,rectangle split parts=3] [below right = of A] {%
   $C(3)$
   \nodepart{second}
   y := 0
@@ -842,7 +842,7 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\node[state] (E) [below left =of D] node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
+\node[state] (E) [below left =of D]{} node [label = {[label distance = 0.3cm]90:Block D}, rectangle split,rectangle split parts=5] [below left = of D] {%
   $C(3)$
   \nodepart{two}
   a := 2 * x
@@ -854,12 +854,12 @@ draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height 
   $C(3)$
   %
   };
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$false$} (D);
-\path[->] (A) edge node [align = center][above = 0.3 cm] {$true$} (B);
-\path[->] (B) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (D) edge node [align = center][above = 0.3 cm] {$$} (E);
-\path[->] (E) edge[bend right = 80] node [align = center][above = 0.3 cm] {$false$} (D);
-\draw[->] (E) --++(0,-2.5cm) node[align = centre] [above left = 0.05cm] {$true$};
+\path[->] (A) edge node [above = 0.3 cm] {$false$} (D);
+\path[->] (A) edge node [above = 0.3 cm] {$true$} (B);
+\path[->] (B) edge  (E);
+\path[->] (D) edge  (E);
+\path[->] (E) edge[bend right = 80] node [above = 0.3 cm] {$false$} (D);
+\draw[->] (E) --++(0,-2.5cm) node [above left = 0.05cm] {$true$};
 
 \end{tikzpicture}
 \end{center}

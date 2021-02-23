@@ -1,0 +1,134 @@
+
+\definecolor {tp}{cmyk}{0,0,0,0}
+\clearpage
+\section{DFA Value Orderings}
+
+In this section, we are going to discuss the convergence property of the DFA algorithm. And we will start by defining some arguments for it. 
+
+\subsection{Orderings}
+
+\underline{Idea}: Simplify the presentation of analysis by ordering the abstract values. We will create an arbitrary operator, ``\textless" (less than), which orders them in the following manner.
+
+\begin{center}
+    $\bot$(bottom) \textless C(constant) \textless $\top$(top)
+\end{center}
+
+This operator is a transitive which means that $\bot$(bottom) \textless $\top$(top) is also true.\\ We are going to use this operator to reason about the convergence properties of the DFA algorithm.
+
+\subsection{Partial Ordering}
+This ordering that we defined is a partial ordering, and not a total ordering. It means that among all the possible values, it is not necessary that all values are comparable. There are some values that are comparable, and some values that are not.\\
+Another way to represent the partial ordering is by using a vertical representation instead of a horizontal representation, and using the directed arrow to represent the ``\textless" (less than) operator. The arrow from $\top$ to C indicates that C \textless $\top$.
+
+\begin{figure}[h!]
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =1.2cm and 1.2cm ,on grid ,
+semithick ,
+state/.style ={ circle ,top color =white , bottom color = tp!20 ,
+draw,processblue , text = black , scale = 0.8 ,minimum width =1 cm}]
+\node[draw=none] (A){$\top$};
+\node[draw=none] (B) [below =of A] {C};
+\node[draw=none] (C) [below =of B] {$\bot$};
+
+\path (A) edge  (B);
+\path (B) edge  (C);
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+C is not a value, but a place holder for any constant. A better way to represent the ordering would be in the following manner.
+
+\begin{figure}[h!]
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =1.2cm and 0.8cm ,on grid ,
+semithick ,
+state/.style ={ circle ,top color =white , bottom color = tp!20 ,
+draw,processblue , text = black , scale = 0.8 ,minimum width =1 cm}]
+\node[draw=none] (A) {$\top$};
+\node[draw=none] (B) [below =of A] {0};
+\node[draw=none] (D) [right =of B] {1};
+\node[draw=none] (E) [left  =of B] {-1};
+\node[draw=none] (F) [right =of D] {2};
+\node[draw=none] (H) [right =of F] {. . .};
+\node[draw=none] (G) [left  =of E] {-2};
+\node[draw=none] (I) [left =of G] {. . .};
+\node[draw=none] (C) [below =of B] {$\bot$};
+
+\path (A) edge  (B);
+\path (A) edge  (D);
+\path (A) edge  (E);
+\path (A) edge  (F);
+\path (A) edge  (G);
+\path (B) edge  (C);
+\path (D) edge  (C);
+\path (E) edge  (C);
+\path (F) edge  (C);
+\path (G) edge  (C);
+\path[dashed, - >]  (A) edge (H);
+\path[dashed, - >]  (A) edge (I);
+\path[dashed, - >]  (I) edge (C);
+\path[dashed, - >]  (H) edge (C);
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+Notice that the figure does not have any relation between 0 and 1, or 1 and 2, or between any two constants, in general. That is why it is called a partial ordering, because only some values are related by ``\textless" operator.\par
+
+\underline{Greatest Value}: The value which is not less than any other value. In this case, it is $\top$(top).\par
+
+
+\underline{Least Value}: The value which is not greater than any other value.In this case, it is $\bot$(bottom).
+
+\subsection{Greatest Lower Bound}
+To build the concept of greatest lower bound, we introduce ``$\le$"(less than equal to) operator which in addition to all the properties of ``\textless"(less than) operator, is also reflexive, \textit{i}.\textit{e}., x $\le$ x $\forall$ x.\\
+The \textbf{greatest lower bound(glb)} of $x_1, x_2, ..., x_n$ is the greatest value that is lower than(by ``$\le$" operator)  $x_i$, $\forall i$ s.t. $1 \le i \le n$.\\
+Here are some examples of glb:
+\begin{enumerate}
+    \item \underline{glb($\top$,1)} = 1
+    \item \underline{glb($\top$,$\bot$)} = $\bot$
+    \item \underline{glb(2,$\bot$)} = $\bot$
+    \item \underline{glb(1,2,$\top$)} = $\bot$
+    \item \underline{glb(1,2)} = $\bot$
+\end{enumerate}
+
+\textbf{Observation}: Glb can be used to replace the first four transfer function rules which defined the relation between the ``out of the predecessors" and ``in of the successor".
+\begin{center}
+    $C(s,x,in)$ = glb$\{C(p,x,out)\ |$ p is a predecessor of s \}
+\end{center}
+
+\subsection{Convergence Argument}
+
+The DFA algorithm repeats itself until nothing changes. The only reason for it to not converge is, if it keeps changing forever. There are two reasons for it to keep changing forever.
+\begin{enumerate}
+    \item Algorithm can keep taking a different value from the infinite set of values, for the same variable and at the same program point.
+    \item Algorithm can keep oscillating between the finite number of same values, for the same variable at the same program point.
+\end{enumerate}
+
+Using glb, we will prove that the fix point iteration always converges. Here are the convergence arguments:
+\begin{enumerate}
+    \item \underline{Values start at $\top$ and can only decrease}.
+    \item \underline{$\top$ can change to $C$, and $C$ to $\bot$}.\\ 
+    It cannot happen that $\top$ changes to some constant C, let's say 1 and in a different iteration it changes to a different constant, let's say 0. This is because one of the predecessors would still have the value 1, and if any other predecessor changes its value to a different constant, we are going to take the glb of predecessors which only allows the value to decrease in the order mentioned in this argument. This intuitive argument can be proved more formally by using induction on the Control Flow Graph of the program.\\
+    Since this argument does not allow the value to go upwards, i.e., from C to $\top$, or from $\bot$ to C, or from $\bot$ to $\top$, oscillation is not possible among these values.
+    \item \underline{Thus, C(s, x, in/out) can change at most twice, $\forall$ s and x}.
+\end{enumerate}
+
+\subsection{Worst Case Execution Time}
+\subsubsection{For One variable}
+At least one value changes in each iteration, and at every program point a value can change twice therefore:\\
+Number of steps of Fixed Point Iteration Algorithm $\leq$ (Number of C(s, x, in/out) statements) * 2\\
+There can be at most two C(s, x, in/out) statements per each statement therefore:\\
+Number of steps of Fixed Point Iteration Algorithm $\leq$ (Number of program statements) * 4
+
+\subsubsection{For all variables}
+There are two options to deal with all the variables.
+\begin{enumerate}
+    \item \underline{Run the algorithm separately for each variable}.\\
+    To calculate the worst execution time, we multiply the number of variables to worst execution time for one variable. The number of variables would be less than the number of program statements, assuming Three Address Code.
+    Therefore, the worst case would be quadratic in size of the program.
+    \item \underline{Keep track of all variables simultaneously}.\\
+    This can be done by modifying the transfer function such that it looks at every variable simultaneously and updates multiple values in one step. It improves the performance because looking at a set of variables is usually cheaper that looking at each of them separately.\\
+    It also provides more information while updating the values. For example, if we have a statement like ``x := y + z", and we have the information that y and z are constants at this point, then we can also infer that x is a constant. Had we dealt with the variables separately, this would have not been possible. In another words, the analysis would have been weaker. If we do things separately, we may end up with less precise solution in some situations, for some type of analysis.
+\end{enumerate}
+
