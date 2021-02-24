@@ -1,1 +1,33 @@
 \section{Intermediate Representation}
+(Prepared by Sonu Mehta)\\
+Here begins the code optimization part. The compiler pipe line begins with source code which is unoptimized, having specifications of the program logic by human programmer.On the other end of the pipeline, we have assembly code which actually gets executed on machine. The question we want to address here is: where to do the optimization? Here are three different options along with their pros and cons:
+
+
+\begin{itemize}
+    \item \textbf{Optimize at source code level} : For e.g, we can run optimization on  the abstract syntax tree(AST) of the programming language. But then, we will have to deal with a lot of features which are very specific to a programming language. For e.g., C has \emph{for} and \emph{while} loops but optimization does not care whether loops are written using \emph{for} or \emph{while}, it just needs to know that there is a loop.
+    Also, sometimes we need information about the architecture to do architecture specific optimizations but if we do the optimization at source code level, we do not have visibility into the architecture. 
+    \item \textbf{Optimize at assembly language}: This level has much less features, usually nothing specific to any programming language. But here the optimization space is very limited because most of the decisions are already taken by the time we reach the assembly code. 
+    \item \textbf{Optimize the intermediate representation(IR)} : Most compilers have intermediate representation(IR). The AST is translated to IR and then optimized IR is converted to assembly code. 
+    What is a good intermediate representation? The IR should be simple enough, should not have unnecessary program features(e.g., \emph{for} vs \emph{while} loop differentiation). Also we want to make minimum commitments when designing IR so that we have large optimization space.
+    Essentially there is a tradeoff in designing the IR:\\
+    i) IR too close to assembly - there is smaller optimization space\\
+    ii) IR too close to source - loose architecture specification optimizations.
+\end{itemize}
+\\
+\\
+\textbf{More Software Engineering advantages of IR:}\\
+We can have $n$ number of source code languages on the source code side and  similarly, we can have $m$ number of instruction set architectures(ISA) like x86 etc on the architecture side. If we write one IR that can serve both different source code languages and architectures, then we just need to write optimizers once for that IR. We won't have to write different optimizers for each language or each ISA. 
+But then there is one more issue here: The types of constructs needed to support C(lower level language than python) program are different from the type of constructs needed to support python program. IR design can be considered more art than science and is constantly evolving. 
+
+\\In reality, its difficult to design one IR, so there are multiple IRs -(in the range of 3-5). Each IR has its own level of abstraction. Each level will have different optimizations, because different types of optimizations require different abstractions. This can be explained with an example: 
+Consider \emph{Tensorflow} :\\ 
+1. In \emph{Tensorflow}, source program is represented as graph.\\
+2. Nodes are operators. Edges represent data flow. \\
+3. Datatypes are tensors(multi-Dimensional arrays).
+\\
+\\
+Some example optimizations are:\\
+1. \textbf{Matrix level rewrites} : $A*A^{-1} = I$. (For this, we need to know that $A$ is a matrix and $*$ is multiplication operation). Such operations are easier closer to the source code because by the time we reach assembly code, we lose track of this high level information.\\ \\ 
+2. \textbf{Parallelization operation}:  This needs dependency information which is in the form of matrices, so better to do this optimization at higher level than lower level. \\ \\
+3.\textbf{Locality} : There is fixed size architecture, we need to organize data so that the cache is maximum utilized. Optimizations like these are done in higher level IRs. \\ \\
+4. \textbf{Register Allocation} : These need to be done at lower level of abstractions, so these are done at lower level IRs. 
