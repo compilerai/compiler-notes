@@ -1,1 +1,63 @@
 \section{Three Address Code}
+\subsection{IR for Assembly Code Generation}
+This is low level IR and is meant for assembly code generation. Typically this IR is present in compiler tool chains of almost all languages.
+IR resembles high-level assembly. Some properties for such IR are:
+\begin{itemize}
+    \item  They have register names similar to assembly language. Unlike assembly code, they have unlimited numbers of registers.
+    \item They have control structures like conditional and unconditional branches(similar to assembly). They are lower level than if-else(in C) etc.
+    \item They have opcodes. They have higher level opcodes, something like doing vector addition. These opcodes are very similar to the ones in assembly which make their conversion to assembly opcodes easier. Sometimes IR opcodes could be lower level as well. For eg., some assembly opcodes can do multiple operations (\emph{add}, \emph{multiply}) in one instruction which might not be the case with the IR opcode. These need to be kept into mind while converting from IR to assembly code.
+    An opcode is higher level if its translation to assembly code results in more than 1 instruction. If more than one opcodes translate to one instruction in assembly code, then it is considered lower level opcode.
+\end{itemize}
+
+\subsection{IR Characteristics}
+Each instruction is of the form\\
+
+$x$ = $y$ op $z$  (binary operation)
+\\
+or
+\\
+
+$x$ = op $y$ (unary operation)\\
+where $y$ and $z$ are registers or constants, can be scalars or vectors.
+This type of IR is called \emph{Three-Address Code}. This is because, for each operation, there are at max 3 addresses ($x$, $y$, $z$). Addresses are registers or memory addresses.
+
+\subsection{Three Address Code Property}
+Expression $x+y*z$ translates to \\
+
+$t1 = y*z$ \\
+
+$t2 = x+t1$ \\
+
+\textbf{Property} : Each sub-expression has a name which makes compilation easier later on from the perspective of optimization.
+Assembly operations such as \emph{load} and \emph{store} are also supported.
+
+\subsection{IR Code Generation}
+This is very similar to assembly code generation. 
+\\ \\
+Define function \textbf{$igen(e,t)$} as a function which\\ \\
+(INPUT) : takes an expression $e$ and a value $t$. $t$ represents the register name in which the value of expression should be computed.\\ \\
+(OUTPUT) : $igen(e,t)$ generates code to compute the value of expression $e$ in register $t$. (Currently assuming that there are unlimited number of registers)
+
+\subsubsection{IR CodeGen Example}
+\begin{math}
+\begin{array}{lcl}
+    igen(e_1+e2,t) =  &  \\
+     & igen(e_1, t_1) \\
+     & igen(e_2, t_2)\\
+     & t=t_1+t_2
+\end{array}
+\end{math}\\
+$t_1$ and $t_2$ are fresh registers.
+
+\subsubsection{Three Address Code IR}
+\textit{LLVM (Low level Virtual Machine)} is the one of most popular \emph{Three Address Code} IRs.\\ \\
+ \underline{\textbf{Types} in LLVM are} : \\
+ (integer) $i1$, $i8$, $i32$.. ($i1$ stands for 1-bit integer and so on..) \\
+ (float)\\
+ (pointers) i32*, i32**..\\
+ (vector types)$\langle4 * i32\rangle$\\
+ (struct types) $\{i32, i16\}$
+  \\ \\
+The size of the integer is not consequential to optimization, so we make this decision by the time we reach IR. \\ \\
+\underline{\textbf{Risc-like opcodes}} : \textit{LLVM} has opcodes like add, load, store, call, ret, branch, conditional branch...
+Unlike assembly code, these opcodes can have unbounded number of arguments.
