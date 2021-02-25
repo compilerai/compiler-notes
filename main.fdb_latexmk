@@ -1,10 +1,10 @@
 # Fdb version 3
-["pdflatex"] 1614254501 "/home/nate/acads/sem8/COL729/compiler-notes/main.tex" "/home/nate/acads/sem8/COL729/compiler-notes/main.pdf" "main" 1614254501
+["pdflatex"] 1614254631 "/home/nate/acads/sem8/COL729/compiler-notes/main.tex" "/home/nate/acads/sem8/COL729/compiler-notes/main.pdf" "main" 1614254631
   "../module69.tex" 0 -1 0 ""
   "/etc/texmf/web2c/texmf.cnf" 1613308234 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/nate/acads/sem8/COL729/compiler-notes/../module69.tex" 0 -1 0 ""
-  "/home/nate/acads/sem8/COL729/compiler-notes/main.aux" 1614254501 8 a94a2480d3289e625eea47cd1b285758 ""
-  "/home/nate/acads/sem8/COL729/compiler-notes/main.tex" 1614254501 3799 ac4692771b081f0c58b81f03c22aa871 ""
+  "/home/nate/acads/sem8/COL729/compiler-notes/main.aux" 1614254631 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/nate/acads/sem8/COL729/compiler-notes/main.tex" 1614254631 3796 1ed8cacf4e2ec2842af675570facf733 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1575674566 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
   "/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
@@ -142,9 +142,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1613463518 8257380 e87ad771e2cbb5a958586a12af90056a ""
   "main.aux" 0 -1 0 "pdflatex"
-  "main.tex" 1614254501 3799 ac4692771b081f0c58b81f03c22aa871 ""
+  "main.tex" 1614254631 3796 1ed8cacf4e2ec2842af675570facf733 ""
   (generated)
+  "/home/nate/acads/sem8/COL729/compiler-notes/main.log"
   "/home/nate/acads/sem8/COL729/compiler-notes/main.pdf"
   "main.aux"
-  "/home/nate/acads/sem8/COL729/compiler-notes/main.log"
   "main.log"
