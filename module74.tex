@@ -1,0 +1,40 @@
+\section{Peephole Optimizations}
+
+A peephole optimization is a type of local optimization based on a pattern matching rule consisting of a pattern and a replacement. Here, both pattern and replacement are templates for a sequence of instructions.
+
+\[pattern \rightarrow replacement\]
+\[i_1, i_2, ... , i_n \rightarrow j_1, j_2, ..., j_m\]
+
+The main idea here is to scan the code and look for the code matching the pattern template and replace it with the replacement code which might be better than the original code in utilization of one of the program's resources. Traditionally the peephole optimization has been quite successfully used on assembly code.
+
+Some examples of peephole optimizations are as follows:
+
+\begin{itemize}
+    \item move \$r1 \$r2; move \$r2, \$r1 $\rightarrow$ move \$r1 \$r2
+    
+    Possible to do the above replacement because after the first instruction, second move is just a nop and can be removed. It is equivalent to dead code elimination. Do note that the registers mentioned in the instructions are simply placeholders and there can be some other registers as well. 
+    \item addiu \$r1, \$r1, i; addiu \$r1, \$r1, i $\rightarrow$ addiu \$r1, \$r1, i + j
+    
+    Again registers and constants in the above instructions are simple placeholders and can take any arbitrary value. The above example can be considered as constant folding cast as peephole optimization.
+    \item addiu \$r1, \$r2, 0 $\rightarrow$ move \$r1, \$r2
+    \item move \$r1 \$r1 $\rightarrow$ \(<\) empty \(>\)
+\end{itemize}
+
+The peephole optimizations are implemented as a database of rules. An optimizer, then scans the code to find the code that matches any pattern in the database and then can be replaced by the replacement.
+
+Many (but not all) local optimizations can be cast as peephole optimizations. Some examples and counterexamples are as follows:
+
+\begin{itemize}
+    \item Algebraic simplification: If an instruction multiplies the value in a register with some power of 2, it can be replaced by a shift instruction.
+    \item Copy Propagation: It cannot be cast as peephole optimization as the definition of a variable and its usage can be very far away with multiple instructions in between with various combinations making it difficult to match them to a pattern
+    \[w := x\]
+    \[...\]
+    \[...\]
+    \[t := w + 1\]
+\end{itemize}
+
+Like local optimizations, peephole optimizations can be applied repeatedly. Applying one peephole optimization can activate as well as curb other usages of peephole optimizations. Thus, peephole optimizations are used iteratively a fixed number of times or until no further patterns can be found.
+
+The idea of peephole optimizations becomes more attractive if these can be generated automatically instead of manually coded. Use of enumerative and stochastic methods have been there to automatically learn peephole optimizations.
+
+"Program optimization" is grossly misnamed. Present day "optimizers" have no intention or even pretense of working towards the optimal program. They work towards improving the performance of the code based on certain patterns. Therefore, code "improvers" is a better term.
