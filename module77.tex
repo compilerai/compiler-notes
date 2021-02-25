@@ -65,10 +65,6 @@ $C(x, s, p)$ can take only one of 3 different unique values during and after exe
 \textbf{Rules for the Transfer function:}
 
 \begin{enumerate}
-    \item If $C(x, p, out) = \bot$ then $\forall s \in$ successors(p), $C(x, s, in) = \bot$
-    % Insert image
-    \item If $C(x, s, in) = C$ and s does not modify x then, $C(x, s, out) = C$
-    % Insert image
     \item If $C(p_i, x, out) = \bot$ for any i, then $C(x, s, in) = \bot$
     % Insert image
     \item If $C(p_i, x, out) = c$ and $C(p_j, x, out) = d$ and $c \neq d, i \neq j$ for some $i, j$ then, $C(s,x,in) = \bot$
@@ -81,7 +77,7 @@ $C(x, s, p)$ can take only one of 3 different unique values during and after exe
     \item $C(y := ..., x, out) = C(y:=..., x, in)$ where $y \neq x$
 \end{enumerate}
 
-We now have 10 rules relating $C(s, x, in/out)$ to the value of this function at a predecessor point. These rules are exhaustive.
+We now have 8 rules relating $C(s, x, in/out)$ to the value of this function at a predecessor point. These rules are exhaustive.
 
 \vspace{0.3cm}
 
@@ -103,7 +99,7 @@ Note that there is a trivial solution,
     $C(s, x, in/out) = \bot$, for all statements s
 \end{center}
 
-All 10 rules are satisfied by this solution but this solution is useless to us because it doesn't allow us to perform any transformations/optimizations. We're not interested in just any solution. We are interested in the "most precise" solution (for some notion of precision). For eg. Saying that $x=4$ at some program point is more precise than just saying $x=\bot$. Similarly, saying that $x=\top$ is more precise than saying $x=\bot$ because the fact that this program point is unreachable is still useful information because now we can consider doing dead code elimination in this part of the program.
+All 8 rules are satisfied by this solution but this solution is useless to us because it doesn't allow us to perform any transformations/optimizations. We're not interested in just any solution. We are interested in the "most precise" solution (for some notion of precision). For eg. Saying that $x=4$ at some program point is more precise than just saying $x=\bot$. Similarly, saying that $x=\top$ is more precise than saying $x=\bot$ because the fact that this program point is unreachable is still useful information because now we can consider doing dead code elimination in this part of the program.
 
 \vspace{0.3cm}
 
@@ -119,9 +115,9 @@ To solve this system of equations in a more precise way, we use a Fixed Point It
     \item At every entry point s to the program, set $C(s, x, in) = \bot$
     \item At every other statement s (which is non-entry), set $C(s,x,in) = \top$
     \item For every statement s, $C(s,x,out) = \top$
-    \item Repeat the following until all program points satisfy rules 1-10:
+    \item Repeat the following until all program points satisfy rules 1-8:
     \begin{itemize}
-        \item Pick a statement s not satisfying one or more rules in rules 1-10 and update the corresponding $C()$ function value using the appropriate rule
+        \item Pick a statement s not satisfying one or more rules in rules 1-8 and update the corresponding $C()$ function value using the appropriate rule
     \end{itemize}
 \end{itemize}
 
