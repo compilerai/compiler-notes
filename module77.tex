@@ -72,8 +72,8 @@ $C(x, s, p)$ can take only one of 3 different unique values during and after exe
     \item If $C(p_i, x, out) = c$ or $C(p_i, x, out) = \top$ for all i, then $C(s, x, in) = c$
     \item If $C(p, x_i, out) = \top$ for all i, then $C(s, x, in) = \top$
     \item If $C(s, x, in) = \top$, then $C(s, x, out) = \top$
-    \item If rule 7 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := c, x, out) = c$ [where c is a constant]
-    \item If rule 7 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := f(...), x, out) = \bot$
+    \item If rule 5 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := c, x, out) = c$ [where c is a constant]
+    \item If rule 5 does not apply i.e $C(s,x,in) \neq \top$, then $C(x := f(...), x, out) = \bot$
     \item $C(y := ..., x, out) = C(y:=..., x, in)$ where $y \neq x$
 \end{enumerate}
 

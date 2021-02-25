@@ -1,0 +1,28 @@
+\section{Feb 19 Discussion}
+\begin{itemize}
+    \item \textbf{Jai Javeria}: When discussing global constant propagation, it was said that to apply this transformation, we need to know that property X applies at a particular point and to know that this property X applies at this point we need knowledge of the entire program. However, this is not always true and is not a necessary condition and so it is more accurate to say that to know that this property X applies at this point we \textbf{\textit{may}} need knowledge of the entire program.
+    
+    \item \textbf{Sonu Mehta}: How do we apply optimizations? Do we apply local optimizations first and then global?
+
+    A: Global optimizations subsume local optimizations. So, typically we'll be more concerned with global optimizations than local optimizations because of the more general nature of global optimizations. Most of the initial optimizations will all be global. However, there are specialized local scenarios where local optimizations come in handy and are helpful. So at the end of the optimization pipeline we apply the local optimizations. These local optimizations are typically difficult to do globally.
+    
+    \item \textbf{Shubham Sondhi}: In module 77, it was said that assigning bottom to all program points would be a valid solution but it is actually not a valid solution because it would violate the rule which says that if we do not see a value $\top$ in the "in" of a statement, and the statement is x:=c, then we should assign a constant to the out of the statement. Everything $\top$ is also not an answer because it doesn't satisy the boundary condition that the in of the beginning condition must be $\bot$. Here, what might work is slightly modifying the rule being violated to say that if "in" of a statement is not $\top$ and the statement is x:=c, then the out can be c or lower (which is $\bot$). With this rule, all $\bot$ will be a valid solution. 
+    
+    \item \textbf{Anirudh Panigrahi}: In rule 7, it was said that if a statement is x:=f(...) and in of this statement is not top, then the out of this statement will be bottom. Is the RHS of this statement necessarily a function or can it be anything which is not a constant?
+    
+    A: It can be anything which is not a constant. The f(....) is just a placeholder for anything not a constant.
+    
+    \item \textbf{Jai Javeria}: It was said in Module 78 that the DFA values have a partial order but it would be more accurate to say that its a strict partial order because partial orders can be reflexive.
+    
+    \item \textbf{Jai Javeria}: Dataflow was discussed in the contex of tracking one variable's values across different program points. It was mentioned that handling multiple variables might be potentially faster than handling just single variables?
+    
+    A: There is a time vs. space tradeoff. If we have a table/set of variables storing each variables values at different program points, we could maintain that table with efficient data structures. Details will be clearer when you watch later modules.
+    
+    \item \textbf{Sonu Mehta}: Dataflow analysis was discussed in relation to global constant propagation. Can similar things be done for other optimizations as well.
+    
+    A: Yes. Dataflow analysis is a general framework that can be applied to many different frameworks.
+    
+    \item \textbf{Sonu Mehta}: The greatest lower bound (glb) was discussed and it was said that it was transitive and reflexive. Is glb(1,1)=1?
+    
+    A: Yes. It is reflexive.
+\end{itemize}
