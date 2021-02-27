@@ -1,3 +1,4 @@
+\clearpage
 \section{Feb 19 Discussion}
 \begin{itemize}
     \item \textbf{Jai Javeria}: When discussing global constant propagation, it was said that to apply this transformation, we need to know that property X applies at a particular point and to know that this property X applies at this point we need knowledge of the entire program. However, this is not always true and is not a necessary condition and so it is more accurate to say that to know that this property X applies at this point we \textbf{\textit{may}} need knowledge of the entire program.
@@ -25,4 +26,26 @@
     \item \textbf{Sonu Mehta}: The greatest lower bound (glb) was discussed and it was said that it was transitive and reflexive. Is glb(1,1)=1?
     
     A: Yes. It is reflexive.
+    
+    \item\textbf{Indrajit Banerjee}: Instead of just having 3 values of $\top$, $\bot$ and constant, is it possible to extend this analysis by including a new abstract value which tells whether x is definitely greater than 0 or we cannot say anything about it, at some program point?
+    
+    A: We need to get some new transfer function rules, for the different kind of statements that would affect the variable in consideration.
+    
+    \item \textbf{Arpit Saxena}: Wouldn't it be difficult to define the transfer function rules for a variable to be definitely positive at a program point? Even for a simple statement like x = x + 1, we cannot surely say that the ``out of the statement" would be greater than 0, given that the ``in of the statement" was positive, because the value might overflow in some case.
+    
+    A: It is tied to the language semantics. A language like C considers interger overflow an undefined behaviour. We can ignore the overflow cases while defining the transfer function rules for a language like C. For other languages, We can maintain a set of potential values that x could have a program point, every time we find a new value that x can take, we add it to the set. But this would take a lot of memory and time, in some cases it may not even converge.
+    
+    \item \textbf{Jai Javeria}: Once we convert the language to its intermediate representation like LLVm, do we lose information for example, whether an integer can overflow or not?
+    
+    A: LLVM preserves information in some cases(for example, whether integer overflow is an undefined behaviour or not), and in other cases it choses the most conservative answer. 
+    
+    \item \textbf{Vijay Bhardwaj}: How is the dataflow technique applied in the multi-threaded programs, or in case of pointers?
+    
+    A: For multi threaded programs, we make an assumption that there are no data races, even Java and C makes this assumption. Data races in C are undefined behaviour, that's what allows the compilers to do all the optimizations.\\
+    Nothing changes in case of Pointers. Pointer analysis and Aliasing analysis(whether two pointers are pointing to the same location or not) is also modelled as dataflow analysis.
+    
+    \item \textbf{Aditya Senthilnathan}: If C assumes that data races are undefined behaviour, does the compiler fail silently or detect such data races and warn user about it?
+    
+    A: Compiler typically fails silently. Detecting the data races is very expensive and it would make the program very slow, so it is not done in production code. 
 \end{itemize}
+
