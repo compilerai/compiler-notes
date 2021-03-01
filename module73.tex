@@ -1,0 +1,109 @@
+\section{Local Optimizations}
+
+Local Optimizations are the simplest form of optimizations that can be performed by considering a single basic block in isolation. Some possible examples are:
+
+\begin{itemize}
+    \item \textbf{Elimination of No-ops:} Some statements can be deleted. \(x := x + 0\), \(x := x * 1\), \(x := x | 0\)
+    \item \textbf{Algebraic Simplification:} Some statements can be simplified
+    \[x := x * 0 \rightarrow x := 0\]
+    \[y := x ** 2 \rightarrow y := x * x\]
+    \[x := x * 8 \rightarrow x := x << 3\]
+    \[x := x * 15 \rightarrow t := x << 4; x := t - x\]
+    
+    The above code replacements are meaningful optimizations only if the RHS code would perform better than LHS code which also depends on the underlying hardware.
+    \item \textbf{Constant Propagation or Constant Folding:} For statement x := y op z where y and z are constants, this statement can be computed at compile time.
+    \[x := 2 + 2 \rightarrow x := 4\]
+    \[if\; 2 < 0\; jump\; L \rightarrow No-op\]
+    \[if\;2>0\;jump\;L \rightarrow jump\;L\]
+    
+    More specifically, constant folding is about performing computations at compile time and constant propagation is about propagating constants throughout the program.
+\end{itemize}
+
+\subsection{Dead Code Elimination}
+
+Dead code is the code that is unreachable from the initial block, for example, CFG node with no incoming edges. Removing unreachable code makes the program smaller (and sometimes faster due to fewer cache misses).
+\\
+\\
+\textbf{Why would unreachable block occur?}
+\\
+\#define DEBUG 0
+\\
+...
+\\
+if (DEBUG) \{
+\\
+...
+\\
+\}
+\\
+
+In the above example, after performing constant propagation, DEBUG would be replaced with 0. Further constant folding would remove the jump statement to the 'if' block and it would be converted to dead code which can be eliminated.
+
+Unreachable block may also occur when libraries are imported. Libraries might have a large number of functions but usually only a small fraction of functions are actually used. Then the code for other functions constitute dead code. Usually other optimizations may result in more dead code.
+
+\subsection{Common Subexpression Elimination}
+
+Consider the case of following code with the assumption that the value of x, y, and z remain unchanged after the first statement, then we can perform the following replacement to use the pre-computed value.
+
+x := y + z;
+...;
+...;
+w := y + z; $\;\;\; \rightarrow \;\;\;$ x := y + z; ...; ...; w := x;
+
+In this case, SSA IR particularly helps in doing away with the initial assumption since SSA IR enforces the property that each variable can be assigned only once. In short, SSA IR makes more values available simultaneously.
+
+\[x_1 := y + z; x_2 := x_1 + 3; w := y + z \;\;\; \rightarrow \;\;\; x_1 := y + z; x_2 := x_1 + 3; w := x_1\]
+
+In the above example, the common subexpression being eliminated is y + z. The three address code also makes it easier to identify the uses of a subexpression in the code.
+
+\subsection{Copy Propagation}
+
+If we see w := x, replace subsequent uses of w with x (and eliminate this statement)\\
+\\
+Before: x := y + z; w := x + 3; v := x; u := v + 3;\\
+After: x := y + z; w := x + 3; u := x + 3;\\
+\\
+This optimization leads to less number of copies leading to need of fewer registers. It also activates further optimizations like common subexpression elimination.
+
+\subsection{Example 1}
+
+\textbf{Original Code:} x := y + z; w := x + 3; v := y + z; u := v + 3;\\
+\textbf{After CSE:} x := y + z; w := x + 3; v := x; u := v + 3;\\
+\textbf{After CP:} x := y + z; w := x + 3; u := x + 3;\\
+\textbf{After CSE:} x := y + z; w := x + 3; u := w;\\
+\\
+Further copy propagation is possible due to the third statement u := w.
+
+\subsection{Example 2}
+
+a := x ** 2
+b := 3\\
+c := x\\
+d := c * c\\
+e := b * 2\\
+f := a + d\\
+g := e + f\\
+
+\textbf{Final form: }
+
+a := x * x
+f := a + a
+g := 6 * f\\
+\\
+It is possible for the compiler to get stuck in a "local minima". In the above example, if f := 2 * a was not replaced with f := a + a, there could have been possibility to use the shift operator (f := a \(<<\) 1) or to use copy propagation followed by dead code elimination (a:= x * x; g := 12 * a)
+
+\subsection{Summary}
+\begin{itemize}
+    \item Each local optimization does little by itself.
+    \item Often optimizations interact: performing one optimization may enable of disable other optimizations.
+    \item Optimizing compilers can be thought of as a big bag of tricks.
+\end{itemize}
+
+\subsection{Typical Structure of an Optimizing Compiler}
+repeat \{apply an optimization rule\}\\
+until \{no improvement is possible\}
+
+\begin{itemize}
+    \item \textbf{Convergence} can be guaranteed by defining a metric for performance and ensuring that each iteration improves that metric. This monotonic behaviour would prevent any kind of oscillations that might be possible.
+    \item \textbf{Optimality} is not guaranteed. The compiler can get stuck in a local minima.
+\end{itemize}
