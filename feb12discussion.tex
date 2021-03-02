@@ -1,0 +1,78 @@
+\section{Feb 12 Discussion}
+(Prepared by Sonu Mehta)
+Sonu Mehta gave a summary of the lecture modules.
+\begin{itemize}
+    \item \textbf{Sanjeev Sharma} : Can you give an example of phi nodes, essentially where to add phi nodes, specifically taking into account condition 5?
+    
+    \textbf{A:} The discussion about adding phi nodes are more from the theoretical point of view. It tackles the structure of control flow from more general point of view.
+    The conditions are theoretical set of rules and might not actually occur in control flow graph.
+    
+    \item \textbf{Jai Javeria} : Question about module 70 regarding converting to SSA. ($x_2$ = 3 should be replaced by $x_3$ = 3 as this is a new definition 
+    
+    \textbf{A:} Yes, this needs to be fixed
+    
+    \item \textbf{Jai Javeria} : Module 71 - $\phi$ function has as many $a$ arguments as there are predecessors of $z$. But, not all predecessors might have $a$ within that path? Do we need to add all $a$ or can we optimize by reducing the number of arguments?
+    
+    \textbf{A:} This is possible. But we maintain the number of arguments as the number of predecessors as that is the requirement for SSA. The reason is to have a well-formed SSA program, so that whatever path is taken to reach $z$ node, we know what value of $a$ should be used.
+    Reducing the number of arguments is not optimization. phi node is not a machine construct. It is a construct of intermediate representation, it is not going to be executed, so reducing the no. of arguments would not optimize code. 
+    
+    \item \textbf{Rashul} : In the SSA, we version the variables, which will increase the number of variables in the IR. When we convert SSA to Assembly code, does it mean that we need more registers now and would it be bad for optimization?
+    
+    \textbf{A:} 
+    \textbf{Rahul Kanyal} : In actual architecture, there is rename table, we have physical registers and a lot less architecture registers available to developers. If the register is used again, we can remap it to a register which is already available. We can use the same register again and again because of the rename table.
+    
+    \textbf{A:}  \textbf{Indrajit} \textbf{Harish Kumar Yadav} : The number of registers required to represent an SSA into assembly is almost same as the original code in practical cases.  
+    
+    \textbf{A:} \textbf{Arpit Saxena} : The lifetime of different versions of registers wont overlap, so they can be mapped to the same register.
+    
+    \textbf{A:} The number of overlapping registers is same in SSA and the original code. So register pressure in not increased
+    
+    \item \textbf{Jai Javeria} : If optimizations like common sub-expression elimination is done on SSA, is register pressure increased then?
+    
+    \textbf{A:} Conversion to SSA does not increase register pressure, but optimization on SSA does. Its a trade-off between optimization and register pressure and the call can be taken depending on the metrics that are more important to a particular program. We can design optimizations such that they are aware of register pressure.
+    
+    If there is not enough memory, we might have to spill to memory and we will discuss later in the course.
+    
+    \item \textbf{Rashul} : Wont register pressure be the bottleneck always as fetching from memory is costlier than doing computations?
+    
+    \textbf{A:} This is not necessarily true because most of the times, we go to L1 cache and the latency of L1 cache is almost same as that of register.Even though its memory access, the latency is not impacted, so the memory access is not necessarily more costly that computation.
+    Sometimes, the registers are underutilized, so in those cases, its a good idea to use the underutilised registers.
+    
+    \item \textbf{ Jai Javeria} : Given that we know that optimization might increase the register pressure, what are the benefits of SSA that we would encourage us to use SSA?
+    
+    \textbf{A:} SSA can get lead to optimizations such as common sub expression elimination which might in turn reduce the register pressure. SSA helps to open the opportunities and then take the calibrated decision.
+    
+    \item \textbf{Aditya Saxena} : How do we decide which optimizations need to run before others? Do we use empirical data to orchestrate the optimizations?
+    
+    \textbf{A:} Orchestration of different optimizations to get the most optimal code is NP hard problem. Its more of an art than science. - eg doing constant propagation before dead code elimination makes intuitive sense. If every optimization moves in one direction, then we are guaranteed to reach a fixed point but the time to reach there could be very high. Its an open research problem and people have tried to use ML to come up with the best order for optimizations.
+    
+        Follow up : How do you formulate this NP Hard problem?
+        
+        \textbf{A:} Let's say that there is a program and optimization passes can be considered as discrete mathematical circuits. The way to model the problem is to say : How do you arrange the circuits such that you minimize the cost such as execution time etc.
+    
+    \item \textbf{Vaibhav} :  LLVM is a three address code. Are there any exceptions for any instructions?
+    
+    \textbf{A:} Most of the instructions are three address code. call instructions and some other instructions are not three address code. Its possible to break down any instruction into three address code, but sometimes we do not want to break it down because of its advantages.
+    
+    \item\textbf{Indrajit} : If we allow multiple passes of the same optimization, then finding the most optimal order of optimizations is undecidable(case: if the code has loops)?
+    
+    \textbf{A:} It depends on the settings, like infinite size of the program. 
+    In real settings, program state space is finite, so the undecidable problem becomes NP hard. 
+    
+    \item \textbf{Annirudh} : Guarantee of convergence if all optimizations go in certain direction? But what if it decreases register pressure but increase runtime?
+    
+    \textbf{A:} It depends on the cost function you decide.
+    
+    \item \textbf{Vaibhav} : Explain 5th condition for path convergence of phi node.
+    
+    Taken offline
+    
+    \item \textbf{Vijay} : Can optimization can lead to wrong code? Do we have techniques to verify that?
+    
+    \textbf{A:} In classroom setting, they are designed to be correct. But there could be issues at the implementation level which lead to optimization generating incorrect code. Its also an open research problem. 
+    
+    \item \textbf{Aditya} : Has the problem of compilation modelled as NP hard /NP complete or its individual components modelled?
+    A: If the individual components are NP Hard,the the larger problem is NP Hard. Most of the components within compilation are NP Hard, so if we exclude them, then we are left with limited options.
+    
+    
+\end{itemize}
