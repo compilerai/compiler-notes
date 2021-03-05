@@ -28,4 +28,4 @@ end of that group of modules called "Discussion on Modules MM-NN").
 | 99-102  | Yaduraj Rao, Gandhi Sanket Sanjaykumar |
 | 103-104 | Aadish Jain |
 | 105-107 | Akshin Singh |
-| 108-109 | Akash Kumar |
+| 108-109 | Anurag Singla |
