@@ -1,0 +1,25 @@
+\setlength{\parindent}{0pt}
+
+\section{Liveness DFA example}
+
+Consider the following example:
+
+\begin{framed}
+    \hspace*{0.2 in} $x := 0$\\
+    \hspace*{0.2 in} ${\tt while}(x~!=~0)\{$\\
+    \hspace*{0.4 in} $x := x + 1$ \\
+    \hspace*{0.2 in} $\}$ \\
+    \hspace*{0.2 in} ${\tt return}$\\
+    
+\end{framed}
+ 
+%Example CFG
+
+\subsection{Liveness DFA Observations}
+\begin{itemize}
+    \item Every $L()$ in this analysis can change only once (${\tt false} \rightarrow {\tt true}$). Now this fact guarantees the convergence of the fixed point algorithm.
+    \item Worst Case execution time: For a particular variable, all the $L()$ can change only once, and as the number of such values is $2 \times \#$statements, so the worst case execution time is $O(2 \times \#$statements).
+    \item Once this analysis is finished, we can use it to identify dead code.
+    \item Notice that information flowed in the forward direction (in the direction of the program execution) for constant propagation but flowed in the reverse direction (against the direction of the program execution) for liveness analysis.
+    The former types of analyses are called forward dataflow analyses. The latter types of analyses are called backward dataflow analyses
+\end{itemize}

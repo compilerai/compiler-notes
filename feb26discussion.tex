@@ -1,0 +1,57 @@
+\clearpage
+\section{Feb $26^{th}$ discussion}
+
+\begin{itemize}
+    \item \textbf{Sonu Mehta} : When we eliminate a common subexpression, would we still add a new mapping?
+        For example, if the statement $s$ in consideration is $d := y + z$, and $set_{in}(s)$ has the mapping $(x, y+z)$, then will we add a mapping for $(d,y+z)$ in $set_{out}(s)$?
+
+        \textbf{A:} Yes, we will add a mapping for $(d,y+z)$ after the elimination, despite $y+z$ already being stored in $x$, as the mapping for $x$ may get killed off at some later point in the analysis, and we still want to keep the information that $d$ contains the value of $y+z$.
+    \item \textbf{Vaibhav} : Why would starting from a more aggresive value in DFA give a more precise solution to the fixed point iterative algorithm?
+    
+        \textbf{A:} This is because that the Semi-Lattice organization of the values is organized in such a way that if $x \leq y$, then it is always okay to replace $y$ with $x$ ($x$ is more relaxed than $y$).\\
+                    For example, in liveness analysis, we have that ${\tt true} \leqslant {\tt false}$, and the ${\tt true}$ value is a more relaxed as it only says that a variable $x$ "may" be live (figuring out if a variable is definitely $live$ is an undecidable problem).
+
+                    Hence starting from a lower value may give a less precise solution.
+
+    \item \textbf{Vaibhav} : In the fixed point iterative algorithm for DFA analysis, if we have more than one program point that do not satisfy the DFA rules, then would picking one over the other make a difference?
+    
+        \textbf{A:} Picking one program point over the other in the algorithm would not make a difference with respect to the final solution, but it will make a difference with respect to the efficiency.
+
+    \item \textbf{Arpit Saxena} : Consider a statement of the form $x := e$, and $x$ is dead just after the statement. In our discussion, we declared this statement \underline{dead code}, and then removed it. But what if the expression $e$ has some side-effects as well, like a function call which modifies the memory?
+    
+        \textbf{A:} So far we haven't considered function calls in our discussion, but such function calls might have to be handled separately. This can be dealt with in $2$ ways:
+            \begin{itemize}
+                \item Do not remove statements with function calls (Less precise and more conservative)
+                \item The other way is to consider Memory as another variable in the liveness analysis. Assume that memory is dead at the end of the ${\tt main}$ function, and then modify the transfer function (A more precise solution).
+            \end{itemize}
+    
+    \item \textbf{Jai Arora} : Copy propagation is very similar to Common Subexpression elimination as a DFA Analysis, and they both create opportunities for each other. Also, copy propagation focuses on a subset of all the expressions, so it is possible to modify the transfer function and combine both the analyses?
+            
+            \textbf{A:} Yes, we can combine both of them together, infact, common subexpression elimination subsumes copy propagation. Hence we can say that common subexpression elimination creates more opportunities for itself.
+
+            But copy propagation is a much weaker and a cheaper analysis from the compiler's point of view. Also, sometimes it may just be sufficient to use copy propagation, so it makes sense to keep both the optimizations separate.
+
+    \item \textbf{Anirudh Panigrahi} : How are function calls represented in the intermediate representation? Is it modelled as a jump to a separate basic block?
+            
+            \textbf{A:} LLVM IR has support for function call abstractions. So a function in a language like C will have a corresponding function in the LLVM IR.
+
+    \item \textbf{Jai Arora} : In Global Constant Propagation, if we keep track of more than one variable simultaneously, then we have a chance to get improvements in the time complexity of the algorithm, but we may get a precision advantage in this case. Is it possible to get a similar advantage in Liveness Analysis?
+    
+            \textbf{A:} Yes, we can have a more precise but complex liveness analysis if we keep track of all the variables simultaneously.
+
+                    For example: Consider a statement $s: x := y + z$, where $x$ and $y$ are dead just after the statement. Then we can do the analysis in $2$ ways:
+                    \begin{itemize}
+                        \item We simply use our previous transfer function, and say that $y$ is live just before the statement as $s$ uses $y$
+                        \item We can also use the fact that $x$ and $y$ both are dead just after the statement, which would mean that $y$ would also be dead before this statement as $x$ is not getting used.
+                    \end{itemize}
+                    Note that the second way makes the analysis more precise but even more complex. We don't need to do it as we can run original Liveness algorithm multiple times and we would get the same effect.
+
+    \item \textbf{Arpit Saxena} : CPU's are known to reorder instructions for efficiency reasons. Do compilers also do the same, or is it left to the CPU?
+            
+            \textbf{A:} Yes, compilers also reorder instructions (More examples in later modules). We only reorder instructions only when we preserve the meaning of the program. CPUs use this technique to reduce the number of cycles by taking some unrelated compuation and executing it in some stall cycle.
+
+    \item \textbf{Sonu Mehta} : How are pass by reference semantics modelled in the IRs such as LLVM?
+                    
+            \textbf{A:} References will get converted to pointers at the LLVM IR level in this case.
+
+\end{itemize}
