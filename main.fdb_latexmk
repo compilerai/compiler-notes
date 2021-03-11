@@ -1,9 +1,9 @@
 # Fdb version 3
-["pdflatex"] 1614887238 "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf" "main" 1614887238
+["pdflatex"] 1615461786 "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf" "main" 1615461786
   "../module68.tex" 0 -1 0 ""
   "/etc/texmf/web2c/texmf.cnf" 1614634805 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.aux" 1614887238 8 a94a2480d3289e625eea47cd1b285758 ""
-  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" 1614887234 3800 907e92e2ad545075bcfa3dab718b4d0e ""
+  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.aux" 1615461786 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" 1615461779 3842 3be765e1dfdb4a7e5d8ebe1f10b823d7 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1480098806 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1480098815 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty" 1480098815 8237 3b62ef1f7e2c23a328c814b3893bc11f ""
@@ -128,9 +128,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1614634909 4126266 6e38e9c0f405795583425c2a348f6b26 ""
   "main.aux" 0 -1 0 ""
-  "main.tex" 1614887234 3800 907e92e2ad545075bcfa3dab718b4d0e ""
+  "main.tex" 1615461779 3842 3be765e1dfdb4a7e5d8ebe1f10b823d7 ""
   (generated)
-  "main.log"
+  "main.aux"
   "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf"
   "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.log"
-  "main.aux"
+  "main.log"
