@@ -318,7 +318,7 @@ define finish
   @echo "----- finish ---------------------------------------------------------"
   @echo -n "Start:  "$(START); echo
   @echo -n "Finish: "; date
-  @echo -n "Output: "; ls -l -o tmp/$@
+  @echo -n "Output: "; ls -l tmp/$@
   @echo -n "Target: "
 endef
 
