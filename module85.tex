@@ -1,5 +1,7 @@
 \section{Module 86: Register Allocation}
-
+\begin{flushright}
+\textit{(scribed by Jai Javeria)}
+\end{flushright}
 The Intermediate Representation uses an unlimited number of temporaries. While this simplified code generation and optimization, a machine only has  finite resources and thus we need to map potentially large number of temporaries with the machine registers.
 
 \subsection{Many to One Mapping}
@@ -71,7 +73,7 @@ Next, we discuss an algorithm for register allocation from the ideas that we got
 The undirected graph made is called as Register Interference Graph (RIG). If 2 temporaries do not have an edge between them then we can allocated them to the same register.\\
 The RIG for the second example discussed above is\\
 \begin{center}
-    \includegraphics[scale=0.2]{85_RIGeg2.png}\\
+    \includegraphics[scale=0.2]{images/85_RIGeg2.png}\\
 \end{center}
 As we can see that the RIG extracts a global picture from the program. Now we do not need to be concerned about any program point.\\
 For any register allocation to be valid, any 2 temporaries mapped to the same register by the allocation must not have an edge between them.\\
@@ -81,50 +83,3 @@ Lets just deviate and discuss a theoretical computer science problem.\\
 \textbf{k-colourable Graph:} A graph is k-colourable if it can be coloured with k colours.\\
 On giving it a thought, we can see that the problem of graph colouring can help in validating if a register allocation is possible. Denote every register with a unique colour and try to colour the RIG with k colours, where k is the number of registers. If it is possible we get a valid register allocation for each temporary, else we need to spill some temporaries to memory.\\
 % Unfortunately graph colouring is a NP hard problem. In the next module we discuss a heuristic based  
-% In this analysis, the proallocation.perty that we want to know at a program point is all the expressions available at that point.
-% \begin{itemize}
-%     \item The idea is to maintain a set of available expressions and the temporary in which they are stored, for every program point
-%     \item If a subexpression is available in the set of available expressions just before the statement that computes that subexpression, then replace it by the corresponding temporary (the precomputed value)
-% \end{itemize}
-
-% %Insert Examples
-
-% \subsection{Available expressions DFA}
-% In this analysis, the DFA value that we will deal with is a \underline{set of available expressions}, where each element in this set is a tuple of the register and the expression stored in that register.
-
-% So $(x, y+z)$ denotes that the value of the subexpression $y+z$ is stored in the temporary $x$.
-
-% \vspace{0.5cm}
-% Here also we will set a partial ordering in the values as follows:\\
-% $$s_2 \leqslant s_1 \textbf{ iff } s_2 \subseteq s_1$$
-
-% The lowest value in this ordering is $\{\}$, the empty set. This is a conservative value as it denotes that there is no Subexpression available, hence no subexpression available.
-
-% Once this ordering has been established, we can easily see that $glb(s_1,s_2) = s_1 \cap s_2$.
-
-% \subsection{Transfer Function for Available Expressions}
-% This happens to be a forward dataflow analysis, so we will have 2 types of rules:
-
-% \begin{itemize}
-%     \item \textbf{Case 1:} A statement $s$ has one or more predecessor program points. So in this case, the $in$ value of the statement $s$ is expressed as a function of $out$ values of the predecessor program points.
-%     \item \textbf{Case 2:} For a given statement $s$, the $out$ value is a function of the $in$ value of that statement.
-% \end{itemize}
-
-% Define $set_{in}(s)$ be the set of available expressions before the statement $s$, and $set_{out}$ be the set of available expressions after the statement $s$. The transfer function has the following rules:
-
-% \begin{itemize}
-%     %insert images
-%     \item If $s$ is $x := y + z$, then remove all the set elements that refer to $x$ (all the expressions stored in $x$ and using $x$) from $set_{in}(s)$. Then add $(x,y+z)$ to $set_{out}(s)$.
-%     \item For a statement $s$ and it's predecessors, $set_{in}(s) = glb\{set_{out}(p_i)~|~p_i~\in~{\tt predecessor}(s)\}$
-% \end{itemize}
-
-% Also if $s$ is the starting statement, then the boundary condition for this algorithm would be $set_{in}(s) = \{\}$.
-
-% \subsection{Copy Propagation}
-% Copy Propagation can be easily modelled as a DFA analysis very similar to Available Expressions DFA, except that we will be limiting ourselves to statements of the form $x := y$. The transformation logic will also be similar.\\
-
-% This optimisation creates oppurtunities for other global optimizations such that Global Constant Propagation and Liveness Analysis, so it works well in tandem with them.
-
-% \section{Introduction}
-
-% \end{document}
