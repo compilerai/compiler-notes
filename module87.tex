@@ -1,0 +1,24 @@
+\section{Module 87: Limitations of Graph Colouring}
+\begin{flushright}
+\textit{(scribed by Jai Javeria)}
+\end{flushright}
+\begin{itemize}
+    \item Register Allocation is done statically. 
+    \item Our allocation suffers from the all-or-nothing problem i.e. a temporary is allocated to a register at all program points or none at all.
+    \item Suppose a temporary t1 is used twice in the program. Once inside a loop and the other in a non loop branch. The loop might execute a million number of times and it is essential for t1 to be in a register for performance whereas the second occurrence of t1 in a non loop statement, which might be taken only a few number of times, can have it stored in the memory without much loss of performance.
+\end{itemize}
+\subsection{Region Based Register Allocator}
+Partition the program into regions; solve for each region seprately and reconcile at region boundaries.
+\subsubsection{How to partition into Regions}
+\begin{itemize}
+    \item One region for each loop body.
+    \item Regions based on register pressure. Divide the code into regions based on how many number of registers are being used. In one region the register pressure is high and thus we need to spill some temporaries into the memory whereas in some other region, the register pressure is low and thus we can bring everything back to the register file.
+\end{itemize}
+\subsubsection{Limitations}
+\begin{itemize}
+    \item There is an overhead of reconciliation at a region boundary. For correctness we need to do a translation from one mapping to the other at a region boundary and thus the regions selected should not be too small.
+    \item We also need to do instruction selection later. But some instructions only operate on specific registers and if the operands are not in the required registers, then we somehow need to go back to register allocation again to fix this.
+    \item Some fixes are there for example the reloading pass in the GCC compiler. If there is some problem with the register allocation during the instruction selection then GCC has some architecture specifc rules on how to transform the code to something that would work.
+    \item \textbf{Alternative Approach} Do register allocation and instruction selection simultaneously. We can use dynamic programming approaches that looks at what instructions can be used to implement the given functionality of a subset of IR code and at the same time would look into how can register allocation be done and then somehow combines both to get a solution.
+    \item This involves some more complexity and adds compilation time but can also generate significantly better results.
+\end{itemize}
