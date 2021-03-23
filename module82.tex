@@ -20,7 +20,17 @@ From now on, the discussion is for a particular variable $x$, but it can be gene
 
 \begin{itemize}
     \item \textbf{Case 1:} A statement $p$ has one or more successor program points. So in this case, the $out$ value of the statement $p$ is expressed as a function of $in$ values of the successor program points.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=3cm]{images/Module82_1.png}
+    \end{figure}
+
     \item \textbf{Case 2:} For a given statement $s$, the $in$ value is a function of the $out$ value of that statement.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=3cm]{images/Module82_2.png}
+    \end{figure}
+
 \end{itemize}
 It can be obseved from here that unlike Global Constant Propagation, which is a Forward Dataflow Analysis, this is a Backward Dataflow Analysis (it starts from the exit point).
 

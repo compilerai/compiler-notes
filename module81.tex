@@ -2,18 +2,31 @@
 
 \clearpage
 \section{Liveness Analysis}
+(Prepared by Jai Arora)
+\vspace{0.3cm}
+
 Previously, we saw a type of Global Optimisation called Global Constant Propagation, which required the knowledge of the whole program.
 After all the constants have been propagated globally, there can be a scope for eliminating dead code.
 
-%Insert Example
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=6cm]{images/Module81_1.png}
+    \caption{Motivation for Liveness Analysis}
+\end{figure}
 
 Consider a statement $x := ...$\\
 Questions to ask: Is $x$ live or dead just after the statement? What does liveness mean?\\
 Ans: A variable $x$ is live after a statement if it can be used in the downflow logic\\
 
+Consider the following example:
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=6cm]{images/Module81_2.png}
+    %\caption{Converting to SSA Example}
+\end{figure}
+
 \vspace{0.3cm}
-A variable $x$ is live at a statement $s$ if:
+The above intuition can be formalized as follows. A variable $x$ is live at a statement $s$ if:
 \begin{itemize}
     \item There exists a statement $s'$ that uses $x$
     
@@ -43,7 +56,11 @@ As seen previously, it really helps to construct a partial ordering because it m
 \begin{center}
     ${\tt true} \leqslant {\tt false}$
 \end{center}
-%Insert figure
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=2cm]{images/Module81_3.png}
+    \caption{The Semilattice of Liveness Values}
+\end{figure}
 
 Once this ordering has been established, it can be easily seen that the greatest lower bound of any $2$ values $x, y$ would be the boolean OR of those values.
 $$glb(x,y) = x \vee y$$

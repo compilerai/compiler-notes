@@ -1,9 +1,9 @@
 # Fdb version 3
-["pdflatex"] 1615461786 "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf" "main" 1615461786
+["pdflatex"] 1616470035 "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf" "main" 1616470035
   "../module68.tex" 0 -1 0 ""
   "/etc/texmf/web2c/texmf.cnf" 1614634805 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.aux" 1615461786 8 a94a2480d3289e625eea47cd1b285758 ""
-  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" 1615461779 3842 3be765e1dfdb4a7e5d8ebe1f10b823d7 ""
+  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.aux" 1616470035 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.tex" 1616470025 3843 38490cdeedea29f66d429b65e5529454 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1480098806 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1480098815 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty" 1480098815 8237 3b62ef1f7e2c23a328c814b3893bc11f ""
@@ -88,6 +88,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty" 1480098823 66233 8b81cfab95a1f8fc2f0f6c89415b087a ""
   "/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty" 1480098823 64866 1ea74c5f2d1685881497f021b8f186b2 ""
   "/usr/share/texlive/texmf-dist/tex/latex/collectbox/collectbox.sty" 1480098825 9116 495d44b5a3e7be0c46c5d1f053f457f0 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1480098828 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty" 1480098829 40502 e003406220954b0716679d7928aedd8a ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg" 1480098830 1213 620bba36b25224fa9b7e1ccb4ecb76fd ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1480098830 1224 978390e9c2234eab29404bc21b268d1e ""
@@ -128,9 +129,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1614634909 4126266 6e38e9c0f405795583425c2a348f6b26 ""
   "main.aux" 0 -1 0 ""
-  "main.tex" 1615461779 3842 3be765e1dfdb4a7e5d8ebe1f10b823d7 ""
+  "main.tex" 1616470025 3843 38490cdeedea29f66d429b65e5529454 ""
   (generated)
+  "main.out"
   "main.aux"
   "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.pdf"
-  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.log"
   "main.log"
+  "main.pdf"
+  "/home/jai/Desktop/SixthSem/COL729/compiler-notes/main.log"
