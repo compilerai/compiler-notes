@@ -1,0 +1,23 @@
+\section {Live Variable Analysis}
+\setlength{\parindent}{0pt}
+(Prepared by Namrata Priyadarshani and Shivam Bansal)
+
+\vspace{0.3cm}
+
+In this module, we try to fit Live Variable Analysis, a backward DFA in the framework developed in previous lecture.
+
+\begin{itemize}
+    \item \textbf{Values}: set of variables that are live at a program point.
+    \item \textbf{Transfer function}: It is defined in terms of Use and Def, where $Use[s]$ denotes the variable used in the statement s and $Def[s]$ denotes the variable defined.
+    \newline
+    For example: In statement $S: x=y+z$, $Use[S] = \{y,z\}$ and $Def[S] = \{x \}$.
+    Let the value just above S be in[S] and just below S be out[S] and f be the transfer function, then $in[S] = f(out[S]) = Use[S] \cup (out[S] - Def[S])$. The generation here is $Use[S]$ and the propagation is $out[S] - Def[S]$.
+    \newline
+    \newline
+    At Basic block granularity, $in[B] = Use[B] \cup (out[B] - Def[B])$, where $Use[B]$ is set of locally exposed uses in B and $Def[B]$ is set of variables defined in B.
+    
+    \item \textbf{Meet operator}: Meet operator is Set Union ($\cup$) as a variable is live if it is live on any of the outgoing paths. So, $out[B] = \cup in[s_{i}]$ $\forall i$ such that $s_{i}$ is the successor of B. 
+    \newline
+    The ordering is such that the less than equal to operator indicates the superset. The top value will be $\phi$ or empty set. The bottom value will be set of all variables.
+    \item \textbf{Boundary Condition}: in[Exit] = $\phi$.
+\end{itemize}
