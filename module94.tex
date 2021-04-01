@@ -1,0 +1,153 @@
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+\clearpage
+
+\section{DFA Fixed point iteration}
+(Prepared by Namrata Priyadarshini, Shivam Bansal)
+
+\textbf{Algorithm(Forward DFA):} \\
+Input: control flow graph $CFG = (N, E, Entry, Exit)$ \\
+
+//Boundary condition \\
+$OUT[Entry] = Boundary \, Condition \, Value$ \\
+
+//Initialization for iterative algorithm \\
+For each basic block B other than Entry \\
+\hspace*{0.5cm}  $OUT[B] = Top \, Value $ \\
+
+//Iterate \\
+While (changes to any OUT occur) \{ \\
+\hspace*{0.5cm}    For each basic block B other than Entry \{ \\
+\hspace*{1cm}      $in[B] = $meet over $(out[p])$, for all preds p of B \\
+\hspace*{1cm}      $out[B] = f_B(in[B])$ \\
+\hspace*{0.5cm}    \} \\
+\} \\
+
+So let's look at the DFA fixed point iteration once again. The input to the fixed point iteration algorithm is a control flow graph $CFG = (N, E, Entry, Exit)$. N is the set of nodes, E is the set of edges, Entry is a special node and Exit is also a special node in the control flow graph and then if we look at the forward DFA (we could also have looked at the backward DFA but just for simplicity let's just look at one of them and we arbitrarily pick forward). We initialize out of entry to the boundary condition value so whatever is the boundary condition value for a particular DFA that we're interested in. Then for each other basic block other than entry we just say $OUT[B]=$ top value where top value is again specific to the particular DFA that we are looking at. The top value is based on the meet operator so when we define the meet operator it automatically also defines our top value because top value is something which is greater than equal to everything else (i.e. greater than equal to operator or the ordering operator is also implied by the meet operator). 
+
+In the pseudo code we have the the fixed point iteration and so inside the iteration we say while changes to any out occur for each basic block B do this computation. So now the there's an interesting observation. Because initially everything else is top it's only the first node or the entry node that has a value that is other than top i.e. the boundary condition value. So let's say if we pick some basic block which is other than entry then we know the out of the basic block will be top because in[B] will be top because all its predecessors OUT would be top and so on. The only place where it would make sense to pick a basic block at the first step is the basic block that just follows the entry node. So all the nodes that are successors of the entry node are the ones that we really need to pick, everything else we don't need to pick
+because if we pick them then they are not going to change their values because their predecessors are top, their current value is top and so even the next value is going to be top because meet over top is just top and then transfer function over top is also top
+typically (well transfer function over top is not necessarily top but typically it is top but the point is that typically top represents that something has not been reached or it is the most aggressive value). So we want that things should basically reach that point and only then we should be computing it. 
+
+So the question here is do we really need to consider all basic blocks at every iteration or can we omit some basic block at some iteration. For example, in a forward DFA, in the first iteration we only need to pick up the successors of the entry node and then from there on the data will start flowing. If we pick something in the middle or something at the end in the first iteration that is usually not going to be very useful and the other thing is if we have multiple basic blocks from which we could pick then should there be an order in which we should pick them. We're going to see later on that the order doesn't really matter from a correctness or from a point of view of what result we get but the order may matter from an efficiency perspective.
+
+\section{Worklist Algorithm}
+\subsection{Intuition for the Algorithm}
+There's this famous algorithm called the work list algorithm. It's also commonly called the Kildall's vocalist algorithm, named after the person who first devised this algorithm. The idea here is that for a forward DFA the $out[B]$ value does not change
+if none of the $out[p]$ values change where p is the predecessor of B. So the IN value will change only if one of the output values of the predecessor has changed because if none of the OUT values of the predecessor has changed then we are already in a fixed point. Although maybe at other places we are not at the fixed point. Similarly for
+backward dfa the $out[B]$ value does not change if none of the $in[s]$ values change where s is a successor of B.
+
+Based on this observation here is the idea that we will maintain a work list which is a list of basic blocks that still need to be processed. So list of basic blocks that we know that they need to be processed because maybe in the forward DFA their predecessor was just changed and so their successors are going to be needing some change as
+well. In a forward DFA whenever we remove a basic block from the worklist we compute its out state and if this state has changed the successors are added to the worklist. This basically captures our previous observation. This is going to be hopefully more efficient
+than looking at all basic blocks in each iteration and that's the whole idea. For a backward DFA whenever we remove a basic block from the work list we compute its in state if this state has changed the blocks predecessors are added to the worklist.
+
+\subsection{Algorithm}
+\textbf{Worklist}: List of basic blocks that still need to be processed.
+
+\textbf{Initialization}: Add basic blocks whose information is known.
+
+\textbf{Termination condition}: Worklist becomes empty.
+
+At the initialization time we add the basic blocks whose information is known so whatever
+basic blocks for information is known are added to the vertices i.e. set of basic blocks for which we have boundary condition values. Typically for a forward DFA the boundary condition is known for the entry node and for a backward DFA typically the boundary condition is known for the exit node. Initialization would just involve adding either the entry node to the worklist for a forward DFA or the exit node into the worklist for a backward DFA. 
+
+Then the termination condition is that the worklist becomes empty. Things are added to the worklist only if something changed so at a point where the worklist becomes empty it basically indicates that we have reached a fixed point. Note that the worklist is a set 
+because each block may appear at most once in the worklist at any given time. It's possible that you know a block could have two predecessors and both those predecessors changed and so because of that we tried to add the same block twice into the worklist but if we add the same block twice it's not like we're going to process it twice so we just we just maintain it as a set.
+
+
+
+
+
+
+\subsection{Ordering Blocks in Worklist Algorithm}
+
+\begin{figure}[h!]
+\caption{Worklist algorithm efficiency}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =3.5 cm, minimum height = 2.5 cm}]
+\node[state] (A){} node [label = {[label distance = 0.55cm]90:}, rectangle split,rectangle split parts=1]{%
+  b1
+  };
+\node[state] (B) [below left = of A]{} node [label = {[label distance = 0.55cm]90:},rectangle split,rectangle split parts=1] [below left = of A] {%
+  b2
+  };
+\node[state] (D) [below right =of A]{} node [label = {[label distance = 0.55cm]90:},rectangle split,rectangle split parts=1] [below right = of A] {%
+  b3
+  };
+\path[->] (A) edge node [above = 0.3 cm] {} (D);
+\path[->] (A) edge node [above = 0.3 cm] {} (B);
+\path[->] (B) edge  (D);
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Intuition with an example}
+This basically answers our first question which is - can we omit some basic blocks and if so how do we identify which ones to omit. Now the other question is if there are multiple basic blocks present in the work list at any point and then which one should we pick is it okay if we pick any one. So the answer to this question is yes indeed, it is okay to pick anyone that's just the property of this fixed point iteration algorithm and that's completely independent of the worklist algorithm. We can pick any basic block at any time
+and yet we are going to arrive at the same solution and that's going to be the most precise solution for some definition of precision but from an efficiency point of view
+does it matter which one we pick. Well it turns out that yes it matters which one to pick and here is an example, so let's say we have an example as shown in the figure. So let's say initially in our work list b1 is present and b1 changes so then we are going to add both b2 and b3 to our worklist. Now b2 and b3 have been added to the
+work list now we have two options either we could have picked b3 first and then b2 or we could have picked b2 first and then b3. It feels like it's better to do b2 first because once you have done b2 then the information across (b2, b3) edge will become up to date. On the other hand if we do b3 first then what will happen is that the information on this edge would be stale and so maybe b3 would change or maybe b3 will not change, whatever happens but then we will now do b2 and now because of b2 now maybe b3 has to be added again to the worklist because b2 is pointing to b3. So in this case it would have been better to pick b2 before b3. 
+
+\subsubsection{Algorithm}
+In general if some block bi has an edge to some other block bj then it seems better to basically pick bi before bj. If the code has no cycle then we can actually order these basic blocks so that nodes that are reachable are considered later so if bi can reach bj then bj will be considered later and bi would be considered before bj. But if there is a cycle in the control flow graph then both bi and bj can reach each other in which case we can pick either of them and we don't really don't have any good way or heuristic to say that which one to pick. So that's basically the idea that we're going to use to order the selection of basic blocks when there are multiple choices in the worklist. So for a forward DFA, it would be fastest if all predecessors of b are processed before b is processed so that when b is being processed we should be able to use the latest information on all the incoming edges and this is for a forward DFA. In the absence of loops it is possible to order the blocks so that the algorithm converges by processing each basic block at most once. We can just use any topological sort for the graph. A topological sort of a graph is a sort of the graph where if a node x can reach a node y then x appears before y. If we process the nodes in the topologically sorted order of the graph then we are going to get a good efficiency, every basic block would need to be processed at most once in the entire execution of the DFA fixed point iteration however. That is not true if there are cycles, let's say in the
+previous example if b3 was actually again pointing to b2 and if we pick b2 first then it's possible that we have to do b2 again because we pick b2 then we pick b3 and b3 changes and because of b3 change, b2 needs to be processed again and maybe because of b2 change b3 needs to be processed again and so this can keep going on for some time until  we hit bottom or we hit some fixed point in which case we have to process each basic block potentially more than once. So, in presence of loops in general the reverse postorder is a good idea for forward DFA and postorder is a good idea for backward DFA. There are no theoretical guarantees that it's going to give you the best efficiency but in general it helps because in the presence of cycles if we can just figure out what is the reverse postorder (Reverse post order basically captures the fact that if a node x can reach node y then in the reverse postorder x would appear before y in the absence of cycles and even if there are cycles some reverse postorder will give you some arbitrary ordering because there could be multiple reverse post orders and so it will give you some arbitrary ordering and that would typically work well for a forward DFA because for blocks that are not involved in the cycle it would give you a topological sort.
+
+Isomorphically for the backward DFA, like reverse postorder is ordering things that are reachable later, postorder is ordering things that are reachable earlier because that's what we want in a backward DFA. So reverse postorder and postorder are just inverses of each other and so while one works better for forward the
+other works better for backward DFA.
+
+
+
+
+
+
+\clearpage
+\section{March $12^{th}$ discussion}
+
+\begin{itemize}
+    \item \textbf{Arpit} : In the forward DFA, we are only initializing the OUT of every basic block. Does it matter if we were initializing bot IN and OUT or only OUT to TOP value. 
+
+        \textbf{A:} NO, it doesn't matter if we initialize both values or just the OUT value as in first iteration all the IN values will be again computed from the predecessors' OUT value. But, conceptually it is better to assume that all the values have been set to TOP.
+    \item \textbf{Arpit} : Does the definition of semilattice guarantee unique TOP and BOTTOM values? 
+    
+        \textbf{A:} No, semilattice is just the set of all values and the less than equal to operator. We can have multiple elements which are not less that any other element because it is a partial order. From DFA point of view, we want to have a unique TOP value. For Example, in constant propagation, we defined a new TOP value just because we wanted a unique TOP value. Also, we don't need a unique BOTTOM value.
+
+    \item \textbf{Anirudh} : Can we prove that the worklist algorithm and the earlier algorithm we had for DFA give the same result?
+    
+        \textbf{A:} We can have an example where both algorithms give different answers. For example, we have a disconnected CFG, so the worklist algorithm will never reach the other half but the earlier DFA may change some values in the other half as well and thus produce a different answer(both the answers would be equally good).
+        
+        But we define our transfer functions such that if $IN=TOP$ then $OUT=TOP$. Then in this case both algorithms are equivalent. We can use inductive argument to prove the equivalence (by using the fact that in an iteration, a value can potentially change only if its predecessors' value has changed in the previous iteration).
+
+    \item \textbf{Anirudh} : What if in a semilattice there are multiple first common descendants? Is it possible?
+    
+        \textbf{A:} ...
+        
+    \item \textbf{Namrata} : If the graph is disconnected, doesn't it mean that it is a dead code?
+            
+            \textbf{A:} Exactly, both those algorithm will only differ for the graphs where we don't really care about the answer.
+
+    \item \textbf{Arpit} : If the graph has only one entry and one exit then how can the graph be disconnected?
+            
+            \textbf{A:} Yes it is possible. There can be $if(0)\{ ...\}$ or some part of the code that never gets accessed. Then we don't want entry to reach there and that's the diconnected part of the program.
+
+    \item \textbf{Anirudh} : Can we say, if we have a level in graph where all the values are set to TOP then the worklist algorithm terminates prematurely?
+    
+            \textbf{A:} This confusion arises from the fact that we have defined the Data Flow set of ``equaltions``(using the equal to sign). We could have defined it of the form $OUT[B]\leq meet(p_i)$.
+            
+            Very informally we can say that both algorithms are equivalent. But once we go into the mathematics and proofs then we need to have some properties for the input like graph should not be disconnected or if $IN=TOP$ then $OUT=TOP$ etc.
+
+    \item \textbf{Jai} : In reaching definitions we did not remove the definitions in which $x$ was being used but in common subexpression elimination we remove those. In reaching definitions, how is the definition still valid if $x$ has been overwritten?
+            
+            \textbf{A:} In one we are interested in the values i.e. the values $y$ can have and in other we are interested in the expressions i.e. what different expressions $y$ can hold(for example for phi nodes, where we only care what different definitions can reach a point and we are not interested in whether $x$ has changed or not).
+
+    \item \textbf{Jai} : In three analysis, reaching definitions, must reach and common subexpression, the first two look quite similar.
+                    
+            \textbf{A:} It's all about application. In reaching definitions, we are interested in all the definitions that reach this point. In must reach, we want the definitions that ``must`` reach this point. Reaching definitions may be used for phi nodes or specialized program paths. Must reach definitions is useful for dominator analysis or we want to decrease the distance between definition and use. So every analysis has it's value in different context.
+
+    \item \textbf{Sonu} : Given the semilattice, how can we define transfer function?
+                    
+            \textbf{A:} We have defined the semilattice and we will define the transfer function. Note that these are orthogonal things. It is possible that two different transfer functions have same semilattice. However, there are some properties that transfer function must have with respect to the semmilatice and we will study that.
+\end{itemize}
+\clearpage
