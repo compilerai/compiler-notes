@@ -1,0 +1,29 @@
+\subsection{Defining partial order operator $\leq$ through \^{} meet operator}
+$a\leq b$ if and only if a \^{} b = a. We can see this in example in figure \ref{fig:semilattice_and}. Consider \{false, true\} and \{true, true\}. The meet operator logical AND gives us \{false, true\}. This satisfies above definition thus \{false, true\} $\leq$ \{true, true\}. 
+
+\subsection{Defining meet operator \^{} through partial order operator $\leq$}
+a \^{} b = c if and only if c $\leq$ a, c $\leq$ b and $\nexists$ d d $\leq$ a, d $\leq$ b, c \textless  d. \\
+If we are given a partial ordering of values we can always find unique value in the same set which satisfies the above.
+
+\subsection{Semilattice diagram through  $\leq$}
+$x\leq y$ indicates that there is a path from x to y and vice versa. This can be observed in figure \ref{fig:semilattice_and}. There may not be a direct edge between two nodes related by partial order operator but there will exist a path.
+
+\subsection{Properties of partial order}
+\begin{itemize}
+    \item \textbf{Reflexive x $\leq$ x}
+    \item \textbf{Anti-symmetric x $\leq$ y and y $\leq$ x $\rightarrow$ x = y}
+    \item \textbf{Transitive x $\leq$ y and y $\leq$ z $\rightarrow$ x $\leq$ z}
+\end{itemize}
+Properties of the meet operator \^{} (idempotent, commutative, associative) guarantee the properties for $\leq$. This can be shown easily.
+
+\subsection{The $<$ operator}
+$a<b$ if and only if $a \leq b$ and $b \leq a$. In other words $a\leq b$ and $a\neq b$.
+
+\subsection{Semilattice diagram}
+\begin{itemize}
+\item \textbf{Set of nodes}: Set of values
+\item \textbf{Set of edges}: \{ (y, x) {\textbar} x \textless  y and $\nexists$ z .( x \textless  z and z \textless  y)  \}. If there is such a z then there will be a path from x to z and z to y, so we do not need to draw an edge from x to y.
+\end{itemize}
+
+\subsection{Example of \^{} and $\leq$}
+\textbf{Meet operator \^{} $\triangleq$ set-union $\cup$} : ((x $\leq$ y) $\triangleq$ (x $\cup$ y = x)) $\equiv$ ( x $\supseteq$ y). Thus x $\leq$ y $\equiv$ ( x $\supseteq$ y).
