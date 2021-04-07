@@ -1,0 +1,219 @@
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+\clearpage
+\section{Reaching Definitions Example}
+(Prepared by Namrata Priyadarshini, Shivam Bansal)
+
+We've been looking at different types of data flow analyses and trying to tie them into a single framework. One of the data flow analysis that we looked at was reaching definitions and recall that a reaching definition basically is defined as follows:
+A definition D of the form x = y + z reaches a point P in the program if there exists a path from the point immediately following D to P such that D is not killed, in other words x is not overwritten along that path. 
+So even if there exists one such path where from the end of D to the beginning of P such that x has not been overwritten on that path then D would be considered to be to reach P. So let's look at this example:
+
+\begin{figure}[h!]
+\begin {center}
+
+\begin{minipage}{.5\textwidth}
+\centering
+\caption{Control Flow Graph}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:},rectangle split,rectangle split parts=1]{%
+  d1 : b=3
+  };
+\node[state] (B) [below = of A]{} node [label = {[label distance = 0.3cm]90:}, rectangle split,rectangle split parts=1] [below = of A] {%
+  d2 : c = 3
+  };
+\node[state] (D) [below =of B]{} node [label = {[label distance = 0.65cm]90:}, rectangle split,rectangle split parts=1] [below = of B] {%
+  d3 : c = 4
+  %
+  };
+\path[->] (A) edge node [below=0.3cm] {} (B);
+\path[->] (B) edge node [above=0.3cm] {}  (D); 
+\path[->] (B) edge [out=300,in=72,looseness=3] node[align = right][right] {} (B);
+% \path[->] (B) edge [loop right] node {} (B) ;
+\draw[->] (D) --++(0,-2.5cm) node [above left = 0.05cm] {} ;
+\draw[<-] (A) --++(0,2.5cm) node [above left = 0.05cm] {} ;
+\end{tikzpicture}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\caption{Reaching definitions}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:},rectangle split,rectangle split parts=3]{%
+  $\Phi$
+  \nodepart{second}
+  d1 : b=3
+  \nodepart{third}
+  $\{d1\}$
+  };
+\node[state] (B) [below = of A]{} node [label = {[label distance = 0.3cm]90:}, rectangle split,rectangle split parts=3] [below = of A] {%
+  $\{d1,d2\}$
+  \nodepart{two}
+  d2 : c = 3
+  \nodepart{three}
+  $\{d1,d2\}$
+  };
+\node[state] (D) [below =of B]{} node [label = {[label distance = 0.65cm]90:}, rectangle split,rectangle split parts=3] [below = of B] {%
+  $\{d1,d2\}$
+  \nodepart{two}
+  d3 : c = 4
+  \nodepart{three}
+  $\{d1,d3\}$
+  %
+  };
+\path[->] (A) edge node [below=0.3cm] {} (B);
+\path[->] (B) edge node [above=0.3cm] {}  (D); 
+\path[->] (B) edge [out=300,in=72,looseness=3] node[align = right][right] {} (B);
+% \path[->] (B) edge [loop right] node {} (B) ;
+\draw[->] (D) --++(0,-2.5cm) node [above left = 0.05cm] {} ;
+\draw[<-] (A) --++(0,2.5cm) node [above left = 0.05cm] {} ;
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+\end{figure}
+
+
+It has three definitions d1, d2, d3 and the reaching definitions are given in the figure. At the beginning, we initialize the boundary conditions to the empty set. Let us assume there's no reaching definitions in the beginning. Just after d1, it is only \{d1\} and just before d2 it's actually \{d1,d2\} because there's a path from d1 and then there's a path where d2 also reaches which is the path that takes the cycle.Then if we look at the end of d2 then it's also \{d1,d2\} because there are multiple paths that
+can reach that allow d2 to reach this particular point. Before d3, it's \{d1,d2\} because both d1 and d2 can reach here and then at the very end it's \{d1,d3\} and d2 cannot reach here because notice that both d2 and d3 are assigning to c and d3 is overwriting the c so d3 is killing d2 and so d2 doesn't exist here. So two important things 
+\begin{itemize}
+    \item \{d1,d2\} are present even before d2 because of the loop
+    \item d2 is not present at the exit of the program because d3 has killed d2
+\end{itemize}
+
+\begin{table}
+\centering
+\caption{Reaching Definitions DFA}
+    \begin{tabular}{ c|c}
+     Domain & Sets of Definitions \\
+     \hline
+     Direction  & Forward  \\
+     \hline
+     Transfer Function  & \begin{tabular}[x]{@{}c@{}}$Out[B]=(in[B]-kill[B]) \cup Gen[B]$ \\Gen: Locally exposed definition of B \\ Kill: Definitions overwritten by B \end{tabular}  \\
+     \hline
+     Meet Operator  & Set Union $\cup$  \\
+     \hline
+     Boundary Condition  & $Out[Entry]=\Phi$  \\
+    \end{tabular}
+\end{table}
+
+
+
+
+If we were to look at the data flow analysis for reaching definitions the domain is basically the sets of definitions. For example $\{d1, d2, d3\}$. Direction
+is forward. Transfer function $Out[B]=(in[B]-kill[B])$ where kill is defined by
+statements that are uh overwriting an existing definition and gen is basically the new definition itself. So, kill is definitions over written by B, gen is the locally exposed definitions of B. So if we're talking about a basic block then it's about the locally exposed definitions. So definitions that have been made but have not been killed subsequently. Meet operator is union because we are looking at any such path so if there exists any such path we're going to consider it to reach. Boundary condition is $Out[Entry]=\Phi$.
+
+\section{Must Reach Definitions}
+So now we are going to just change this analysis slightly just to show how the small differences can give you different analysis completely. So let's say we define an analysis called must reach definition which is defined as follows: a
+definition of the form x = y + z must reach point program point P if and only if D appears at least once along all paths leading to P and x is not redefined or in other words D is not killed along any path after the last appearance of D and before P. 
+
+
+So, basically on all possible paths D is reaching P and on none of those paths there's another statement that is killing D . So the last definition of x is because of D on all paths that are reaching P. So that's what must reach definitions says.
+
+\begin{table}
+\centering
+\caption{Must Reach Definitions DFA}
+    \begin{tabular}{ c|c}
+     Domain & Sets of Definitions \\
+     \hline
+     Direction  & Forward  \\
+     \hline
+     Transfer Function  & \begin{tabular}[x]{@{}c@{}}$Out[B]=(in[B]-kill[B]) \cup Gen[B]$ \\Gen: Locally exposed definition of B \\ Kill: Definitions overwritten by B \end{tabular}  \\
+     \hline
+     Meet Operator  & Set Intersection $\cap$  \\
+     \hline
+     Boundary Condition  & $Out[Entry]=\Phi$  \\
+    \end{tabular}
+\end{table}
+
+Data flow analysis of must reach definitions is identical with
+reaching definitions but just the meet operator has changed and instead of set
+union it becomes set intersection and that's going to capture the fact that we want D to reach on all parts and not just any path and so the transfer function remains the same because once again we are interested in definitions that have not been killed but everything else remains the same. The boundary condition remains the same, the direction remains the same, the domains remain the same. Just the meat operator changes and we get a completely different analysis. So that's the power of this common framework you can just change one parameter and you don't have to rewrite the algorithm, you don't have to change anything else, you can just basically reuse the existing infrastructure.
+
+\section{Must Reach Definitions Example}
+
+\begin{figure}[h!]
+\begin {center}
+
+\begin{minipage}{.5\textwidth}
+\centering
+\caption{Reaching definitions}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:},rectangle split,rectangle split parts=3]{%
+  $\Phi$
+  \nodepart{second}
+  d1 : b=3
+  \nodepart{third}
+  $\{d1\}$
+  };
+\node[state] (B) [below = of A]{} node [label = {[label distance = 0.3cm]90:}, rectangle split,rectangle split parts=3] [below = of A] {%
+  $\{d1,d2\}$
+  \nodepart{two}
+  d2 : c = 3
+  \nodepart{three}
+  $\{d1,d2\}$
+  };
+\node[state] (D) [below =of B]{} node [label = {[label distance = 0.65cm]90:}, rectangle split,rectangle split parts=3] [below = of B] {%
+  $\{d1,d2\}$
+  \nodepart{two}
+  d3 : c = 4
+  \nodepart{three}
+  $\{d1,d3\}$
+  %
+  };
+\path[->] (A) edge node [below=0.3cm] {} (B);
+\path[->] (B) edge node [above=0.3cm] {}  (D); 
+\path[->] (B) edge [out=300,in=72,looseness=3] node[align = right][right] {} (B);
+% \path[->] (B) edge [loop right] node {} (B) ;
+\draw[->] (D) --++(0,-2.5cm) node [above left = 0.05cm] {} ;
+\draw[<-] (A) --++(0,2.5cm) node [above left = 0.05cm] {} ;
+\end{tikzpicture}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\caption{Must reach definitions}
+\begin {tikzpicture}[-latex ,auto ,node distance =3.5cm and 5cm ,on grid ,
+semithick ,
+state/.style ={ rectangle ,top color =white , bottom color = processblue!20 ,
+draw,processblue , text=blue , scale = 0.7 ,minimum width =4 cm, minimum height = 4 cm}]
+\node[state] (A){} node [label = {[label distance = 0.3cm]90:},rectangle split,rectangle split parts=3]{%
+  $\Phi$
+  \nodepart{second}
+  d1 : b=3
+  \nodepart{third}
+  $\{d1\}$
+  };
+\node[state] (B) [below = of A]{} node [label = {[label distance = 0.3cm]90:}, rectangle split,rectangle split parts=3] [below = of A] {%
+  $\{d1\}$
+  \nodepart{two}
+  d2 : c = 3
+  \nodepart{three}
+  $\{d1,d2\}$
+  };
+\node[state] (D) [below =of B]{} node [label = {[label distance = 0.65cm]90:}, rectangle split,rectangle split parts=3] [below = of B] {%
+  $\{d1,d2\}$
+  \nodepart{two}
+  d3 : c = 4
+  \nodepart{three}
+  $\{d1,d3\}$
+  %
+  };
+\path[->] (A) edge node [below=0.3cm] {} (B);
+\path[->] (B) edge node [above=0.3cm] {}  (D); 
+\path[->] (B) edge [out=300,in=72,looseness=3] node[align = right][right] {} (B);
+% \path[->] (B) edge [loop right] node {} (B) ;
+\draw[->] (D) --++(0,-2.5cm) node [above left = 0.05cm] {} ;
+\draw[<-] (A) --++(0,2.5cm) node [above left = 0.05cm] {} ;
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+\end{figure}
+
+So just to see an example to understand the difference between reaching definitions and must reach definitions let's take the same example with three definitions d1, d2, d3. d1 is assigning to b and d2 and d3 are assigning to c. Our reaching definitions is basically
+something that we have seen before. Reaching definitions and must reach definitions are same at all points but there's a difference just before d2. It's $\{d1, d2\}$ in reaching definitions but in must reach definitions it's only $\{d1\}$ because there exists a path where d2 doesn't reach this point and that path is the straight line path without the loop and so here it's just d1 but in reaching definitions it becomes $\{d1, d2\}$. So once again for all other points actually it has the same answer. We can check this, for example just after d3. So, just before d3, on all possible paths d2 reaches d3 without getting killed so if we just take the straight line path without taking the loop d2 reached. d2 reaches even if we take a loop. We can take any iterations of the loop and d2 would still reach so on all possible paths d2 is reaching. So d2 must reach this program point and similarly d2 gets killed just after d3 and so d1 and d3 are the only definitions that must reach the point just after d3 and the reaching definitions also has the same answer in this case.
