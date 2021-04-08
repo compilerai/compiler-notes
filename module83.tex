@@ -2,19 +2,23 @@
 \clearpage
 
 \section{Liveness DFA example}
+(Prepared by Jai Arora)
+\vspace{0.3cm}
 
 Consider the following example:
 
-% \begin{framed}
-%     \hspace*{0.2 in} $x := 0$\\
-%     \hspace*{0.2 in} ${\tt while}(x~!=~0)\{$\\
-%     \hspace*{0.4 in} $x := x + 1$ \\
-%     \hspace*{0.2 in} $\}$ \\
-%     \hspace*{0.2 in} ${\tt return}$\\
-    
-% \end{framed}
- 
-%Example CFG
+\begin{figure}[H]
+        \centering
+        \includegraphics[height=6cm]{images/Module83_1.png}
+\end{figure}
+
+The solution for this program using the Liveness DFA rules discussed is follows:
+\begin{figure}[H]
+        \centering
+        \includegraphics[height=6cm]{images/Module83_2.png}
+\end{figure}
+
+The working of this example can be found in \href{https://www.youtube.com/watch?v=dTVq4gnbUYg&list=PLf3ZkSCyj1tf3rPAkOKY5hUzDrDoekAc7&index=83}{this video}.\\
 
 \subsection{Liveness DFA Observations}
 \begin{itemize}

@@ -31,11 +31,11 @@ The above intuition can be formalized as follows. A variable $x$ is live at a st
     \item There exists a statement $s'$ that uses $x$
     
     Eg:- $s':$ $y := f(...,x,...)$
-    \item There is a path from $s'$ to $s$ (directed)
+    \item There is a path from $s$ to $s'$ (directed)
     \item The path has \underline{no intervening assignments} to $x$
 \end{itemize}
 
-Once we have figured if a variable $x$ live or dead at all statements, then we can easily identify dead code.\\
+Once we have figured out if a variable $x$ live or dead at all statements, then we can easily identify dead code.\\
 A statement $x := ...$ is dead code if $x$ is dead immediately after the assignment.
 In this case, as the variable is not being used in the downflow logic, which means that we can simply remove the assignment.
 

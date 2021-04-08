@@ -2,6 +2,9 @@
 
 \clearpage
 \section{Liveness DFA rules}
+(Prepared by Jai Arora)
+\vspace{0.3cm}
+
 Now here we will define the transfer function for the Liveness Analysis. Define the function $L(s,x,in/out)$ as follows:
 
 \begin{itemize}
@@ -9,8 +12,8 @@ Now here we will define the transfer function for the Liveness Analysis. Define 
     \item $s$ - a program statement $s$
     \item $in/out$ - whether it is input to the statement or output to the statement i.e just before the statement or just after the statement.
     \begin{itemize}
-        \item $L(s, x, in)$ = The liveness value of x just before s
-        \item $L(s, x, out)$ = The liveness value of x just after s i.e just after statement s is executed
+        \item $L(s, x, in)$ = The liveness value of $x$ just before s
+        \item $L(s, x, out)$ = The liveness value of $x$ just after s i.e just after statement s is executed
     \end{itemize}
 \end{itemize}
 
@@ -37,8 +40,8 @@ It can be obseved from here that unlike Global Constant Propagation, which is a 
 \subsection{Rules for the Transfer Function:}
 %Insert Images
 \begin{itemize}
-    \item $L(p, x, out) = glb\{L(s_i, x, in)~|~s_i$ is a successor of $p\}$
-    %Insert Image
+    \item $L(p, x, out) = glb\{L(s_i, x, in)~|~s_i$ is a successor of $p\}$\\
+    
     If $x$ is live before any of the successors, then $x$ is live after that statement as it may get used in the downflow logic.
     \item If $s$ is of the form $... = f(...,x,...)$, then $$L(s, x, in) = {\tt true}$$ as the variable $x$ is getting used in this statement.
     \item If $s$ is of the form $x := e$, where $e$ is an expression which does not refer to $x$, then $$L(s, x, in) = {\tt false}$$ as we don't need the values of $x$ just above this statement due to $x$ being rewritten
