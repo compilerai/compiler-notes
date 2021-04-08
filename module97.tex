@@ -1,0 +1,26 @@
+\section {Semilattice Representations, Size, Product and Height}
+\setlength{\parindent}{0pt}
+(Prepared by Shivam Goyal)
+
+\vspace{0.3cm}
+
+\subsection{Semilattice Representation}
+\begin{itemize}
+    \item \textbf{Set of values $V$ and a meet operator \^{}}
+    \item \textbf{Set of values $V$ and a partial order $\leq$}
+    \item \textbf{A semilattice diagram} : which is a directed acyclic graph with nodes and edges. It can have potentially multiple Top and Bottom nodes, but they may not necessarily exist for eg in a semilattice with $V$ as set of integers and $max$ as the meet operator
+\end{itemize}
+
+\subsection{Semilattice Size}
+For some DFA problems, size of the semilattice i.e. the number of elements in the set of values $V$ can become very large. For eg. it could be exponential in number of definitions for a program, if we consider the set of definitions as a value for the semilattice. As the set of values $V$ would be the power set of the set of definitions in the program for some DFA like available expressions.
+\subsection{Product of Semilattices}
+\begin{itemize}
+    \item One idea considering large semilattices is to represent a larger semilattice using product of smaller semilattices.
+    \item Consider 2 semilattices with sets of values as $V1$ and $V2$ then we can define a new semilattice as their product.This would contain values in the set $V1$ x $V2$. 
+    \item The partial order for the product semilattice would be obtained by applying the respective partial order relations on both the elements of the tuple, i.e. for $\leq$ (the new partial order):
+    \par
+    ($x_{1}$,$x_{2}$) $\leq$ ($y_{1}$,$y_{2}$) iff $x_{1}$ $\leq_{1}$ $y_{1}$ and $x_{2}$ $\leq_{2}$ $y_{2}$ where $\leq_{1}$ and $\leq_{2}$ are the respective partial orders of the smaller semilattices. 
+    \item Similar thing can be done in case of the meet operator with the respective meet operators being applied on each element of the tuple, i.e. for \^{} (the new meet operator):
+    \par
+    ($x_{1}$,$x_{2}$) \^{} ($y_{1}$,$y_{2}$) $=$ ($x_{1}$ \^{}$_{1}$ $y_{1}$ , $x_{2}$ \^{}$_{2}$ $y_{2}$), where \^{}$_{1}$ and \^{}$_{2}$ are the respective meet operators of the smaller semilattices.
+\end{itemize}
