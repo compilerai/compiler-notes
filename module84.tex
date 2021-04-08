@@ -2,6 +2,8 @@
 \clearpage
 
 \section{More DFA Examples}
+(Prepared by Jai Arora)
+\vspace{0.3cm}
 
 \subsection{Common Subexpression Elimination}
 
@@ -12,7 +14,7 @@ In this analysis, the property that we want to know at a program point is all th
     \item If a subexpression is available in the set of available expressions just before the statement that computes that subexpression, then replace it by the corresponding temporary (the precomputed value)
 \end{itemize}
 
-%Insert Examples
+A step-by-step example for this analysis can be found in \href{https://www.youtube.com/watch?v=g3msUTH45Hg&list=PLf3ZkSCyj1tf3rPAkOKY5hUzDrDoekAc7&index=84}{this video}.\\
 
 \subsection{Available expressions DFA}
 In this analysis, the DFA value that we will deal with is a \underline{set of available expressions}, where each element in this set is a tuple of the register and the expression stored in that register.
@@ -23,7 +25,7 @@ So $(x, y+z)$ denotes that the value of the subexpression $y+z$ is stored in the
 Here also we will set a partial ordering in the values as follows:\\
 $$s_2 \leqslant s_1 \textbf{ iff } s_2 \subseteq s_1$$
 
-The lowest value in this ordering is $\{\}$, the empty set. This is a conservative value as it denotes that there is no Subexpression available, hence no subexpression available.
+The lowest value in this ordering is $\{\}$, the empty set. This is a conservative value as it denotes that there is no subexpression available, hence no optimization would be done.
 
 Once this ordering has been established, we can easily see that $glb(s_1,s_2) = s_1 \cap s_2$.
 
@@ -35,11 +37,12 @@ This happens to be a forward dataflow analysis, so we will have 2 types of rules
     \item \textbf{Case 2:} For a given statement $s$, the $out$ value is a function of the $in$ value of that statement.
 \end{itemize}
 
-Define $set_{in}(s)$ be the set of available expressions before the statement $s$, and $set_{out}$ be the set of available expressions after the statement $s$. The transfer function has the following rules:
+Define $set_{in}(s)$ be the set of available expressions before the statement $s$, and $set_{out}(s)$ be the set of available expressions after the statement $s$. The transfer function has the following rules:
 
 \begin{itemize}
     %insert images
-    \item If $s$ is $x := y + z$, then remove all the set elements that refer to $x$ (all the expressions stored in $x$ and using $x$) from $set_{in}(s)$. Then add $(x,y+z)$ to $set_{out}(s)$.
+    \item If $s$ is $x := y + z$, then remove all the set elements that refer to $x$ (all the expressions stored in $x$ and using $x$) from $set_{in}(s)$. This is because now $x$ stores a new expression in it, so all the previous mappings of $x$ would have to be removed. Also, all those mappings in which $x$ is used in the expression would also have to be removed because the value of the expression has now changed.\\
+    Then after this, add $(x,y+z)$ to $set_{out}(s)$.
     \item For a statement $s$ and it's predecessors, $set_{in}(s) = glb\{set_{out}(p_i)~|~p_i~\in~{\tt predecessor}(s)\}$
 \end{itemize}
 
