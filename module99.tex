@@ -1,0 +1,33 @@
+\section {Family of Transfer Functions}
+\setlength{\parindent}{0pt}
+(Prepared by Sanket Gandhi)
+
+\vspace{0.3cm}
+\begin{itemize}
+    \item Recall that a DFA is defined by ($F$, $V$, \^{}) where ($V$, \^{}) forms the semilattice and $F$ is family of transfer functions.
+    \item Family of Transfer Functions $F$ is set of functions. For particular DFA each transfer function for an instruction or a basic block is drawn from the set $F$. 
+    \item If transfer function does not have certain properties then DFA may not terminate. $F$ should have certain properties in order to reason about optimality and convergence of DFA.
+\end{itemize}
+
+\subsection{Properties of Family Transfer Functions F}
+Family of transfer functions $F$ must have following properties.  
+\begin{itemize}
+    \item Every function is $F$ takes a value from DFA value set $V$ and returns a value from same set $V$, that is every function $f$ in $F$ have form $f:V \rightarrow V $
+    \item F contains the identity function that is, $\exists \ f \in F \ $ such that $f(x) = x $, $ \forall \ x \in V$. \\ This property is needed because in case of NOP instructions the output is equal to input. So identity function should be in $F$.  
+    \item F is closed under composition, if $f_{1},f_{2} \in F$ then $f_{1}\circ f_{2} \in F$.\\ This property will be helpful for defining transfer functions for basic blocks.
+\end{itemize}
+
+\subsection{Example}
+Many of the DFAs(Reaching definitions, Constant Propagation etc.) have following structure in transfer function.
+\[f(x) = (x-kill_{s})\bigcup gen_{s}\] for some instruction $s$. $kill_{s}$ and $gen_{s}$ only depends on $s$ and are independent of $x$.
+\\$F$ is the set of function which is populated by changing $kill$ and $gen$ set in above structure.
+In case of reaching definitions if we have $n$ definitions in program then size of $F$ will be $4^{n}$.  Lets check whether $F$ is family of transfer functions or not.
+\begin{itemize}
+    \item Every function in $F$ take a set of some kind $x$ input and perform set operations. The output is also set of same kind. $F$ have first property of family of transfer function.
+    \item In case of $gen = \emptyset$ and $kill = \emptyset$, the transfer function will become $f(x) = x$ and $f\in F$.
+    \item Consider two functions $f_{1}(x) = (x-kill_{1})\bigcup gen_{1}$ and $f_{2}(x) = (x-kill_{2})\bigcup gen_{2}$. Both $f_{1}, f_{2}$ belongs to $F$. 
+    \[f_{2}(f_{1}(x)) = ((x-kill_{1})\bigcup gen_{1}-kill_{2})\bigcup gen_{2}\]
+    By using property $A\bigcup B - C = (A-C)\bigcup (B-C)$ the above equation becomes
+    \[f_{2}(f_{1}(x)) = (x-(kill_{1} \bigcup kill_{2}))\bigcup ((gen_{1}-kill_{2})\bigcup gen_{2})\]
+    With $kill_{1\circ 2} = kill_{1} \bigcup kill_{2}$ and $gen_{1\circ 2} = (gen_{1}-kill_{2})\bigcup gen_{2}$ the composite function becomes $f_{2}(f_{1}(x)) = (x - kill_{1 \circ 2})\bigcup gen_{1\circ 2}$. Therefore $f_{1} \circ f_{2} \in F$ as $F$ contain transfer functions with all possible $gen$ and $kill$ set. 
+\end{itemize}
