@@ -1,0 +1,195 @@
+\section{Computational Structure of a Region-Based DFA}
+\FloatBarrier
+\begin{flushright}
+    \textit{Scribed by Arpit Saxena}
+\end{flushright}
+
+\begin{enumerate}
+    \item {
+        Identify transfer function of each region (and sub-region)
+
+        \textbf{Bottom-up pass:}
+        \begin{enumerate}
+            \item Basic blocks transfer function derived from individual 
+            statement's transfer functions 
+            \item Loop body's transfer function from basic block's transfer 
+            function
+            \item Loop's from loop body's, \ldots
+        \end{enumerate}
+    }
+    \item {
+        Compute the dataflow values at each program point by using the summary
+        transfer functions (for entire regions)
+
+        \textbf{Top-down analysis}: Descend down the region hierarchy
+        for internal points
+    }
+
+    
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\label{fig:m120:ex1:a}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box] (b1) {
+                sum = 0\\
+                Q1 --- \\
+                i = 0 \\
+                P1 ---
+            };
+            \node[box] (b2) {
+                P2 --- \\
+                i < n
+            };
+            \node[unbox,below left=of b2] (b3) {exit};
+            \node[box,below=of b2] (b4) {sum += i \\ i++};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b2) edge node[edge, left] {F} (b3)
+                    edge node[edge, right] {T} (b4);
+            \draw (b4.230) -| ++(0.6,-0.3) -| ([xshift=5mm]b2.east) |-
+            ([yshift=3mm]b2.50) -- (b2.50);
+        \end{tikzpicture}
+    }}
+    \subfloat[\label{fig:m120:ex1:b}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {sum = 0 \\ i = 0};
+            \node[box](b2) {loop body \\ region};
+            \node[unbox](b3) {exit};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b2) edge (b3);
+            \draw (b2.230) -| ++(0.6,-0.3) -| ([xshift=5mm]b1.east) |-
+            ([yshift=5mm]b1.50) -- (b1.50);
+            
+        \end{tikzpicture}
+    }}
+    \subfloat[\label{fig:m120:ex1:c}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {sum = 0 \\ i = 0};
+            \node[box](b2) {loop region};
+            \node[unbox](b3) {exit};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b2) edge (b3);
+        \end{tikzpicture}
+    }}
+    \subfloat[\label{fig:m120:ex1:d}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {Procedure \\ Region};
+            \node[unbox](exit) {exit};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (exit);
+        \end{tikzpicture}
+    }}
+    \caption{A Region Hierarchy\\ Note that P1, P2, \ldots\ are program points}
+    \label{fig:m120:ex1}
+\end{figure}
+
+In figure \autoref{fig:m120:ex1:b}, the loop body's transfer function
+would be:
+
+{
+    \centering
+    \tt
+    f\textsubscript{b}(m) = m' \\
+    m'(i) = m(i) + 1 \\
+    m'(sum) = m(sum) + m(i) \\
+}
+
+Based on f\textsubscript{b}, we'll try to create a summary transfer
+function for the entire loop.
+
+In figure \autoref{fig:m120:ex1:c}, the loop's transfer function would be
+
+{
+    \tt
+    \centering
+    m\textsuperscript{l} = f\textsubscript{l}(m) \\
+    m\textsuperscript{l}(i) = max(m(i), n) \\
+    m\textsuperscript{l}(sum) = m(sum) + $\sum_{j=m(i)}^{n-1} j$ \\
+}
+
+Note that if initially $i \geq n$, then the loop is not even entered, which
+is the reason for having max in the second equation.
+
+All iterations of the loop have been summarised as a single transfer function
+f\textsubscript{l}, and it is a sophisticated symbolic analysis which may not
+be possible for every loop. In that case, we have a fallback option of just
+executing a basic DFA.
+
+For figure \autoref{fig:m120:ex1:d}, we use the fact that we know at start of loop
+region that \texttt{m(i) = 0, m(sum) = 0} and get the following transfer
+function
+
+{
+    \tt
+    \centering
+    m\textsuperscript{p} = f\textsubscript{p}(m) \\
+    m\textsuperscript{p}(i) = n \\
+    m\textsuperscript{p}(sum) = n * (n - 1) / 2 \\
+}
+
+Note that the transfer function doesn't need to be a closed form function. It
+only needs to be a computable (terminating) function.
+E.g.: Trivial solutions based on fixed point (terminating because the lattices
+have finite height).
+
+Suppose we wanted to compute value at P1 (refer to \autoref{fig:m120:ex1}).
+
+In top-down fashion, we start from the procedure region. If we needed Q1,
+then f\textsubscript{1} (which transfer function for the first basic block
+in figure \autoref{fig:m120:ex1:c}) would only give summary of the basic block.
+So, we'll apply transfer function of \texttt{sum = 0}.
+
+In general, at every level of the hierarchy: Compute the DFA values on that level
+of the hierarchy and we'll get boundary values of next-level regions. If we're
+interested in an internal point of a region, we can use DFA value computed at 
+beginning of the region to get value internal to the region.
+
+To compute value at P\textsubscript{2}:
+\begin{itemize}
+    \item Run DFA on procedure region
+    \item Get value at beginning of loop region (P1). Note it's different
+    from P2 because the former is executed only once while the latter is entered
+    at every loop iteration.
+    \item Using P1, we find value at P1 at next level of the hierarchy.
+    \[Val[P_1] \wedge f_b(f_1(m_0)) \wedge f_b^2(f_1(m_0)) \wedge \ldots\]
+\end{itemize}

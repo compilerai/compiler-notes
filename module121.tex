@@ -1,0 +1,316 @@
+\section{Composing Transfer Functions}
+\FloatBarrier
+\begin{flushright}
+    \textit{Scribed by Arpit Saxena}
+\end{flushright}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\label{fig:m121:fig1:a}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {f\textsubscript{1}};
+            \node[box](b2) {f\textsubscript{2}};
+            \coordinate[on chain] (end);
+            \node[draw,fit=(b1) (b2)](summary) {};
+            \node[below right] at (summary.south) {f\textsubscript{summary}};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b2) edge (end);
+        \end{tikzpicture}
+    }}
+    \subfloat[\label{fig:m121:fig1:b}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box, inner ysep=2mm](b1) {};
+            \node[box, below left=of b1](b2) {f\textsubscript{1}};
+            \node[box, below right=of b1](b3) {f\textsubscript{2}};
+            \node[box, below=of b1, below left=of b3, inner ysep=2mm](b4) {};
+            \coordinate[on chain] (end) {};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b1) edge (b3)
+                (b2) edge (b4)
+                (b3) edge (b4)
+                (b4) edge (end);
+            \node[draw, fit=(b1)(b2)(b3)(b4)](summary) {};
+            \node[below right] at (summary.south) {f\textsubscript{summary}};
+        \end{tikzpicture}
+    }}
+    \subfloat[\label{fig:m121:fig1:c}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {f};
+            \coordinate[on chain] (end) {};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (end);
+            \draw (b1.230) -| coordinate (l1) ++ (0.6,-0.3) -| coordinate (l2) ([xshift=5mm]b1.east) |-
+            coordinate (l3) ([yshift=5mm]b1.50) -- coordinate (l4) (b1.50);
+            \node[draw, fit=(b1) (l1) (l2) (l3) (l4)](summary) {};
+            \node[below right] at (summary.south) {f\textsubscript{summary}};
+        \end{tikzpicture}
+    }}
+    \caption{}
+
+
+\end{figure}
+
+\begin{itemize}
+    \item The summary functions for larger regions are based on the transfer
+    functions of the smaller sub-regions.
+    \item The summary functions may involve sophisticated symbolic analysis.
+    \item The fallback summary transfer functions can be described using
+    composition, meet, and closure operators on transfer functions (for 
+    reducible graphs).
+
+    The loops can be captures by the structure that there is a loop body and a
+    back edge, the value for it is being captured by the closure. Closure
+    means to repeat f one or more times, potentially unbounded.
+    \item More sophisticated summary transfer functions can often be described
+    using composition, meet, and closure operations on transfer functions.
+\end{itemize}
+
+\subsection{Transfer Function Operations}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\centering Composition \label{fig:m121:fig2:a}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {f\textsubscript{1}};
+            \node[box](b2) {f\textsubscript{2}};
+            \coordinate[on chain] (end);
+            \node[draw,fit=(b1) (b2)](summary) {};
+            \node[right] at (summary.east) {$f_1 \circ f_2$};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (b2)
+                (b2) edge (end);
+        \end{tikzpicture}
+    }}
+    \subfloat[\centering Meet\label{fig:m121:fig2:b}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \coordinate[on chain] (dummy);
+            \node[box, below left=of dummy](b2) {f\textsubscript{1}};
+            \node[box, below right=of dummy](b3) {f\textsubscript{2}};
+            \coordinate[on chain, below=of dummy, below left=of b3] (end) {};
+            \path[]
+                (begin) edge[-] (dummy)
+                (dummy) edge (b2)
+                (dummy) edge (b3)
+                (b2) edge (end)
+                (b3) edge (end);
+            \node[draw, fit=(dummy)(b2)(b3)](summary) {};
+            \node[right] at (summary.east) {$f_1 \wedge f_2$};
+        \end{tikzpicture}
+    }}
+    \subfloat[\centering Closure\label{fig:m121:fig2:c}] {{
+        \tt
+        \begin{tikzpicture}[->,
+            node distance = 12mm,
+            start chain = going below,
+            box/.style = {draw,rounded corners,fill=white,
+                on chain,align=center,inner xsep=8mm},
+            unbox/.style = {on chain,align=center},
+            edge/.style = {midway}]
+            \coordinate[on chain] (begin);
+            \node[box](b1) {f};
+            \coordinate[on chain] (end) {};
+            \path[]
+                (begin) edge (b1)
+                (b1) edge (end);
+            \draw (b1.230) -| coordinate (l1) ++ (0.6,-0.3) -| coordinate (l2) ([xshift=5mm]b1.east) |-
+            coordinate (l3) ([yshift=5mm]b1.50) -- coordinate (l4) (b1.50);
+            \node[draw, fit=(b1) (l1) (l2) (l3) (l4)](summary) {};
+            \node[right] at (summary.east) {f*};
+        \end{tikzpicture}
+    }}
+    \caption{}
+
+
+\end{figure}
+
+\subsubsection{Example: Constant Propagation}
+
+\begin{minipage}{0.4\textwidth}
+    \tt
+    \captionsetup{type=figure}
+    \begin{tikzpicture}[->,
+        node distance = 12mm,
+        start chain = going below,
+        box/.style = {draw,rounded corners,fill=white,
+            on chain,align=center,inner xsep=8mm},
+        unbox/.style = {on chain,align=center},
+        edge/.style = {midway}]
+        \coordinate[on chain] (begin);
+        \node[box](b1) {x = 2};
+        \node[box](b2) {y = 3};
+        \coordinate[on chain] (end);
+        \path[]
+            (begin) edge (b1)
+            (b1) edge (b2)
+            (b2) edge (end);
+    \end{tikzpicture}
+    \captionof{figure}{Constant Propagation: Composition}
+    \label{fig:m121:const_prop_composition}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \begin{lstlisting}
+f1(in) {
+    in $\cup$ {(x:2)}
+}
+f2(in) {
+    in $\cup$ {(y:3)}
+}
+f1 $\circ$ f2(in) {
+    in $\cup$ {(x:2), (y:3)}
+}
+    \end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.4\textwidth}
+    \tt
+    \captionsetup[]{type=figure}
+    \begin{tikzpicture}[->,
+        node distance = 12mm,
+        start chain = going below,
+        box/.style = {draw,rounded corners,fill=white,
+            on chain,align=center, inner xsep=4 mm},
+        unbox/.style = {on chain,align=center},
+        edge/.style = {midway}]
+        \node[on chain, inner xsep=5mm] (begin) {~};
+        \node[box, below left=of begin](b2) {x = 2 \\ y = 3};
+        \node[box, below right=of begin](b3) {y = 2 \\ x = 3};
+        \node[on chain, below=of begin, below left=of b3, inner xsep=5mm] (end) {~};
+        \path[]
+            (begin) edge (b2)
+            (begin) edge (b3)
+            (b2) edge (end)
+            (b3) edge (end);
+    \end{tikzpicture}
+    \captionof{figure}{Constant Propagation: Meet}
+    \label{fig:m121:const_prop_meet}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+  \begin{lstlisting}
+f1(in) {
+    in $\cup$ {(x,2), (y,3)}
+}
+f2(in) {
+    in $\cup$ {(y,2), (x,3)}
+}
+f1 $\wedge$ f2 (in) {
+    f1(in) $\wedge$ f2(in)
+}
+  \end{lstlisting}  
+\end{minipage}
+
+\subsubsection{Example: Available Expressions}
+
+\begin{minipage}{0.4\textwidth}
+    \tt
+    \captionsetup{type=figure}
+    \begin{tikzpicture}[->,
+        node distance = 12mm,
+        start chain = going below,
+        box/.style = {draw,rounded corners,fill=white,
+            on chain,align=center,inner xsep=8mm},
+        unbox/.style = {on chain,align=center},
+        edge/.style = {midway}]
+        \coordinate[on chain] (begin);
+        \node[box](b1) {f};
+        \coordinate[on chain] (end) {};
+        \path[]
+            (begin) edge (b1)
+            (b1) edge (end);
+        \draw (b1.230) -| coordinate (l1) ++ (0.6,-0.3) -| coordinate (l2) ([xshift=5mm]b1.east) |-
+        coordinate (l3) ([yshift=5mm]b1.50) -- coordinate (l4) (b1.50);
+    \end{tikzpicture}
+    \captionof{figure}{Available Expressions}
+
+    \begin{lstlisting}
+while x != n:
+    x = x + 1
+    \end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \begin{lstlisting}
+f(in) {
+    if in[x] != n
+        in{x $\leftarrow$ in[x] + 1} 
+            // Updation on in
+    else
+        in
+}
+    \end{lstlisting}
+
+    Fallback Closure:
+    \begin{lstlisting}
+f* (in) {
+    in {x $\leftarrow \bot$}
+}
+    \end{lstlisting}
+
+    Symbolic Closure:
+    \begin{lstlisting}
+f* (in) {
+    in {x $\leftarrow$ max(in(x), n)}
+}
+    \end{lstlisting}
+\end{minipage}
+
+\subsection{Composing GEN/KILL Transfers}
+
+Consider the example of reaching definitions.
+\begin{lstlisting}
+f1(in) = gen1 $\cup$ (in - kill1)
+f2(in) = gen2 $\cup$ (in - kill2)
+
+f1 $\circ$ f2(in) = gen2 $\cup$ ((gen1 $\cup$ (in - kill1)) - kill2)
+f1 $\wedge$ f2(in) = gen1 $\cup$ (in - kill1) $\cup$ gen2 $\cup$ (in - kill2)
+f1* (in) = gen1 $\cup$ (in - kill2)
+\end{lstlisting}
+
+For closure, notice that \texttt{f1(f1(x)) = f1(x)}
